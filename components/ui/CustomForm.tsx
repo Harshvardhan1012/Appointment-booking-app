@@ -5,11 +5,32 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select"
+
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Control, ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import PhoneInput from 'react-phone-number-input'
-
+import { RadioGroup, RadioGroupItem } from "./radio-group";
+import RadioButton from "./RadioButton";
+import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar } from "./calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Button } from "./button";
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
+import { Doctors } from './../../app/constants/index'
+import { FileUploader } from "./FileUploader";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -54,7 +75,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
             <Input
               placeholder={props.placeholder}
               {...field}
-              className="shad-input border-0 text-white bg-black !important"
+              className="shad-input border-0 text-white bg-black"
             />
           </FormControl>
         </div>
@@ -62,7 +83,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
     case FormFieldType.PHONE_INPUT:
       return (
         <FormControl>
-          <PhoneInput          
+          <PhoneInput
             value={field.value}
             placeholder={props.placeholder}
             onChange={field.onChange}
@@ -72,6 +93,78 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
           />
         </FormControl>
       );
+    case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <RadioGroup defaultValue="Male" className="grid grid-cols-3 text-white gap-5" onValueChange={field.onChange} value={field.value}>
+            <RadioButton value="Male" />
+            <RadioButton value="Female" />
+            <RadioButton value="Other" />
+          </RadioGroup>
+        </FormControl>
+      )
+    case FormFieldType.DATE_PICKER:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400 w-full text-white shad-input">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full justify-start text-left font-normal border-transparent h-full",
+                  !field.value && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4 " />
+                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                className="text-white bg-gray-500 border-inherit"
+                mode="single"
+                selected={field.value ?? new Date()}
+                onSelect={d => field.onChange(d)}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+
+        </div>
+      )
+
+    case FormFieldType.SELECT:
+      return (
+        <div className="flex rounded-md bg-dark-400 w-full text-white shad-input h-full">
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <SelectTrigger className="shad-select-trigger">
+              <SelectValue placeholder={props.placeholder} />
+            </SelectTrigger>
+            <SelectContent className="text-white shad-select-content">
+              {
+                Doctors.map((doctor) => (
+
+                  <SelectItem value={doctor.name} key={doctor.name} >
+                    <div className="flex justify-center items-center gap-3">
+                      <Image src={doctor.image} alt={doctor.name} height={30} width={30} />
+                      <p>{doctor.name}</p>
+                    </div>
+                  </SelectItem>
+                ))
+              }
+            </SelectContent>
+          </Select>
+
+        </div>
+      )
+    case FormFieldType.SKELETON:
+      return (
+
+        <FormControl>
+          <FileUploader files={field.value} onChange={field.onChange} />
+        </FormControl>
+
+      )
   }
 };
 
@@ -84,9 +177,9 @@ const CustomFormField = <T extends FieldValues>(props: CustomProps<T>) => {
       name={name}
       render={({ field }) => (
         <FormItem className="flex-1">
-          {props.fieldType !== FormFieldType.CHECKBOX && label && (
-            <FormLabel className="shad-input-label">{label}</FormLabel>
-          )}
+          {/* {props.fieldType !== FormFieldType.CHECKBOX && label && ( */}
+          <FormLabel className="shad-input-label">{label}</FormLabel>
+          {/* )} */}
           <RenderInput field={field} props={props} />
           <FormMessage className="shad-error" />
         </FormItem>
