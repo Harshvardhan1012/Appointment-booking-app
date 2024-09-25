@@ -7,7 +7,7 @@ import { z } from 'zod';
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from '../ui/CustomForm';
 import { SubmitButton } from '../SubmitButton';
-import { Form, FormControl } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 
 
 export default function Registerform() {
@@ -28,7 +28,6 @@ export default function Registerform() {
       Allergies:"",
       identificationDocument: [],
       CurrentMedications:"",
-      physician:"",
     },
   });
 
@@ -48,8 +47,7 @@ export default function Registerform() {
         InsuranceProvider: values.InsuranceProvider,
         Allergies: values.Allergies,
         identificationDocument: values.identificationDocument,
-        CurrentMedications: values.CurrentMedications,
-        physicain:values.physician,
+        CurrentMedications: values.CurrentMedications
       };
       
       console.log(user);
@@ -141,14 +139,6 @@ export default function Registerform() {
 
           
             <h1 className='text-white text-2xl mt-4'>Medical Information</h1>
-            <CustomFormField
-              fieldType={FormFieldType.SELECT}
-              control={form.control}
-              name="physician"
-              label="Primary care physician"
-              placeholder="John Doe"
-              iconAlt="user"
-            />
 
             <div className='grid grid-cols-2 justify-center gap-3 m-0'>
               <CustomFormField

@@ -1,6 +1,7 @@
-import { Aladin } from "next/font/google";
-import { date, z } from "zod";
+import { z } from "zod";
 
+
+//form schema
 export const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -13,6 +14,8 @@ export const formSchema = z.object({
   phone: z.string().nonempty("Phone number is required"), // Ensure it's not empty
 });
 
+
+//register form schema
 export const registerformschema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -27,7 +30,6 @@ export const registerformschema = z.object({
   dob: z.coerce.date(),
   Address: z.string(),
   Occupation: z.string(),
-  physician:z.string(),
   identificationDocument: z.custom<File[]>().optional(),
   InsuranceId: z.string(),
   InsuranceProvider: z.string(),
@@ -35,8 +37,10 @@ export const registerformschema = z.object({
   CurrentMedications: z.string().optional(),
 });
 
+
+//appointment form schema
 export const appointmentformschema = z.object({
-  Doctor: z.string(),
+  physician: z.string(),
   Reason: z.string(),
-  date: z.coerce.date(),
+  Date: z.coerce.date(),
 });
