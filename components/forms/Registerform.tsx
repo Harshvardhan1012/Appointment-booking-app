@@ -7,7 +7,10 @@ import { z } from 'zod';
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from '../ui/CustomForm';
 import { SubmitButton } from '../SubmitButton';
-import { Form, FormControl } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
+import email from './../../public/assets/icons/email.svg';
+import user from './../../public/assets/icons/user.svg';
+
 
 
 export default function Registerform() {
@@ -28,7 +31,6 @@ export default function Registerform() {
       Allergies:"",
       identificationDocument: [],
       CurrentMedications:"",
-      physician:"",
     },
   });
 
@@ -48,8 +50,7 @@ export default function Registerform() {
         InsuranceProvider: values.InsuranceProvider,
         Allergies: values.Allergies,
         identificationDocument: values.identificationDocument,
-        CurrentMedications: values.CurrentMedications,
-        physicain:values.physician,
+        CurrentMedications: values.CurrentMedications
       };
       
       console.log(user);
@@ -80,7 +81,7 @@ export default function Registerform() {
               name="name"
               label="Full name"
               placeholder="John Doe"
-              iconSrc="/assets/icons/user.svg"
+              iconSrc={user}
               iconAlt="user"
             />
 
@@ -91,7 +92,7 @@ export default function Registerform() {
                 name="email"
                 label="Email"
                 placeholder="johndoe@gmail.com"
-                iconSrc="/assets/icons/email.svg"
+                iconSrc={email}
                 iconAlt="email"
               />
 
@@ -108,7 +109,7 @@ export default function Registerform() {
                 name="dob"
                 label="Date of Birth"
                 placeholder="DD/MM/YYYY"
-                iconSrc="/assets/icons/calendar.svg"
+                // iconSrc="/assets/icons/calendar.svg"
                 iconAlt="calendar"
               />
 
@@ -141,14 +142,6 @@ export default function Registerform() {
 
           
             <h1 className='text-white text-2xl mt-4'>Medical Information</h1>
-            <CustomFormField
-              fieldType={FormFieldType.SELECT}
-              control={form.control}
-              name="physician"
-              label="Primary care physician"
-              placeholder="John Doe"
-              iconAlt="user"
-            />
 
             <div className='grid grid-cols-2 justify-center gap-3 m-0'>
               <CustomFormField

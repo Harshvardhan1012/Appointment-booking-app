@@ -6,7 +6,6 @@ import { appointmentformschema } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { SubmitButton } from '../SubmitButton';
 import { Button } from '../ui/button';
 
 export default function AppointmentFormPage() {
@@ -15,8 +14,8 @@ export default function AppointmentFormPage() {
     const form = useForm<z.infer<typeof appointmentformschema>>({
         resolver: zodResolver(appointmentformschema),
         defaultValues: {
-            Doctor: "",
-            date: new Date(),
+            physician: "",
+            Date: new Date(),
             Reason: "",
         },
     });
@@ -25,8 +24,8 @@ export default function AppointmentFormPage() {
 
         try {
             const user = {
-                Doctor: values.Doctor,
-                date: values.date,
+                physician: values.physician,
+                Date: values.Date,
                 Reason: values.Reason,
             }
             console.log(user);
@@ -54,7 +53,7 @@ export default function AppointmentFormPage() {
                         <CustomFormField
                             fieldType={FormFieldType.SELECT}
                             control={form.control}
-                            name="Doctor"
+                            name="physician"
                             label="Primary care physician"
                             placeholder="Dr.John Doe"
                         />
@@ -70,7 +69,7 @@ export default function AppointmentFormPage() {
                         <CustomFormField
                             fieldType={FormFieldType.DATE_PICKER}
                             control={form.control}
-                            name="date"
+                            name="Date"
                             label="Expected Date of Appointment"
                             placeholder="DD/MM/YYYY"
                             iconAlt="calendar"

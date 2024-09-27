@@ -1,3 +1,4 @@
+"use client"
 import {
   FormControl,
   FormField,
@@ -17,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Control, ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import PhoneInput from 'react-phone-number-input'
-import { RadioGroup, RadioGroupItem } from "./radio-group";
+import { RadioGroup } from "./radio-group";
 import RadioButton from "./RadioButton";
 import { Calendar as CalendarIcon } from "lucide-react"
 import { Calendar } from "./calendar"
@@ -31,6 +32,7 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Doctors } from './../../app/constants/index'
 import { FileUploader } from "./FileUploader";
+// import loading from "@/app/loading";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -40,6 +42,7 @@ export enum FormFieldType {
   DATE_PICKER = "datePicker",
   SELECT = "select",
   SKELETON = "skeleton",
+  PASSWORD="password"
 }
 
 
@@ -68,7 +71,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
               height={24}
               width={24}
               alt={props.iconAlt || "icon"}
-              className="ml-2"
+              className="ml-3"
             />
           )}
           <FormControl>
@@ -115,7 +118,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
                   !field.value && "text-muted-foreground"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4 " />
+                <CalendarIcon className="mr-2 h-5 w-5 ml-[-3px] " />
                 {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
@@ -146,7 +149,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
 
                   <SelectItem value={doctor.name} key={doctor.name} >
                     <div className="flex justify-center items-center gap-3">
-                      <Image src={doctor.image} alt={doctor.name} height={30} width={30} />
+                      <Image src={doctor.image} alt={doctor.name} height={34} width={34} />
                       <p>{doctor.name}</p>
                     </div>
                   </SelectItem>

@@ -1,7 +1,20 @@
-import PatientForm from "@/components/forms/PatientForm";
+import { redirect } from "next/navigation";
+import { auth } from "./auth";
+import RegisterPage from "@/components/forms/RegisterPage";
 
-export default function Home() {
+
+export default async function Home() {
+  const session = await auth();
+
+  
+  console.log(session,"session");
+
+
+ if(session){
+  redirect("/dashboard");
+ }
+
   return (
-    <PatientForm />
+    <RegisterPage/>
   )
 }
