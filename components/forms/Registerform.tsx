@@ -8,6 +8,9 @@ import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from '../ui/CustomForm';
 import { SubmitButton } from '../SubmitButton';
 import { Form } from "@/components/ui/form";
+import email from './../../public/assets/icons/email.svg';
+import user from './../../public/assets/icons/user.svg';
+
 
 
 export default function Registerform() {
@@ -78,7 +81,7 @@ export default function Registerform() {
               name="name"
               label="Full name"
               placeholder="John Doe"
-              iconSrc="/assets/icons/user.svg"
+              iconSrc={user}
               iconAlt="user"
             />
 
@@ -89,7 +92,7 @@ export default function Registerform() {
                 name="email"
                 label="Email"
                 placeholder="johndoe@gmail.com"
-                iconSrc="/assets/icons/email.svg"
+                iconSrc={email}
                 iconAlt="email"
               />
 
@@ -106,7 +109,7 @@ export default function Registerform() {
                 name="dob"
                 label="Date of Birth"
                 placeholder="DD/MM/YYYY"
-                iconSrc="/assets/icons/calendar.svg"
+                // iconSrc="/assets/icons/calendar.svg"
                 iconAlt="calendar"
               />
 

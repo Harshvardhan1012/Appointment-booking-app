@@ -17,7 +17,7 @@ export async function POST(req: Request) {
         // Create the user with Prisma
         const user = await prisma.user.create({
             data: {
-                name:body.name,
+                // name:body.name,
                 email:body.email,
                 phone:body.phone,
             },

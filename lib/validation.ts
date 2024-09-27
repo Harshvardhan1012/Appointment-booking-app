@@ -3,9 +3,7 @@ import { z } from "zod";
 
 //form schema
 export const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  password:z.string().min(2,"min 2 char required").max(10,"max 10 char allowed"),
   email: z
     .string()
     .email("Invalid email address") // Email validation
@@ -15,15 +13,27 @@ export const formSchema = z.object({
 });
 
 
+//login form schema
+export const loginformschema = z.object({
+  password:z.string().nonempty("password is required"),
+  email: z
+  .string()
+  .email("Invalid email address") // Email validation
+
+});
+
+
+
+
 //register form schema
 export const registerformschema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
   email: z
-    .string()
-    .email("Invalid email address") // Email validation
-    .nonempty("Email is required"), // Ensure it's not empty
+  .string()
+  .email("Invalid email address") // Email validation
+  .nonempty("Email is required"), // Ensure it's not empty
 
   phone: z.string().nonempty("Phone number is required"), // Ensure it's not empty
   gender: z.enum(["Male", "Female", "Other"]),
