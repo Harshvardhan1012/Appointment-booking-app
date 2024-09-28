@@ -5,16 +5,19 @@ import { auth } from "./app/auth";
 export async function middleware(request: NextRequest) {
 
    const session=await auth();
+   const response = NextResponse.next();
+   response.headers.set('Cache-Control', 'no-store');
     // If user is not authenticated, redirect to login page
-    if (!session) {
-      
-      return NextResponse.redirect(new URL('/login', request.url));
+    const { pathname } = request.nextUrl;  // Get the current request URL
+    console.log("middleware called-=029000",session);
+
+    if (session && (pathname === '/login' || pathname === '/home')) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));  // Redirect to dashboard
     }
-  
-    // If user is authenticated, continue
+
     return NextResponse.next();
   }
   
   export const config = {
-    matcher: ['/dashboard'], // Protect specific routes (adjust as necessary)
+    matcher: [ '/login', '/dashboard','/','/home'],  // Apply to specific routes
 };

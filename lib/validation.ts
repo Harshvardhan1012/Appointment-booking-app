@@ -23,8 +23,6 @@ export const loginformschema = z.object({
 });
 
 
-
-
 //register form schema
 export const registerformschema = z.object({
   name: z.string().min(2, {

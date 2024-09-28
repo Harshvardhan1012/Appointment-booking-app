@@ -20,7 +20,7 @@ import { Control, ControllerRenderProps, FieldValues, Path } from "react-hook-fo
 import PhoneInput from 'react-phone-number-input'
 import { RadioGroup } from "./radio-group";
 import RadioButton from "./RadioButton";
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon, EyeIcon, EyeOffIcon } from "lucide-react"
 import { Calendar } from "./calendar"
 import {
   Popover,
@@ -32,6 +32,7 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Doctors } from './../../app/constants/index'
 import { FileUploader } from "./FileUploader";
+import { useState } from "react";
 // import loading from "@/app/loading";
 
 export enum FormFieldType {
@@ -42,7 +43,7 @@ export enum FormFieldType {
   DATE_PICKER = "datePicker",
   SELECT = "select",
   SKELETON = "skeleton",
-  PASSWORD="password"
+  PASSWORD = "password"
 }
 
 
@@ -61,6 +62,9 @@ interface CustomProps<T extends FieldValues> {
 }
 
 const RenderInput = <T extends FieldValues>({ field, props }: { field: ControllerRenderProps<T>; props: CustomProps<T> }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const disabled = field.value === '' || field.value === undefined || field.disabled
+
   switch (props.fieldType) {
     case FormFieldType.INPUT:
       return (
@@ -168,6 +172,43 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
         </FormControl>
 
       )
+    case FormFieldType.PASSWORD:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400 w-full">
+          {props.iconSrc && (
+            <Image
+              src={props.iconSrc}
+              height={24}
+              width={24}
+              alt={props.iconAlt || "icon"}
+              className="ml-3"
+            />
+          )}
+          <FormControl>
+            <Input
+              placeholder={props.placeholder}
+              type={showPassword?FormFieldType.PASSWORD:FormFieldType.INPUT}
+              {...field}
+              className="shad-input border-0 text-white bg-black"
+            />
+          </FormControl>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-full hover:bg-transparent bg-inherit text-white pt-3 flex justify-center items-center"
+              onClick={() => setShowPassword((prev) => !prev)}
+              disabled={disabled}
+            >
+              {showPassword && !disabled ? (
+                <EyeIcon className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
+              )}
+              <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+            </Button>
+        </div>
+      );
   }
 };
 

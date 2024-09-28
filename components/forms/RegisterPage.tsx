@@ -10,18 +10,21 @@ import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from './../ui/CustomForm'
 import { useRouter } from 'next/navigation';
 import { Button } from './../../components/ui/button'
+import { handleCredentialsSignin } from '@/app/actions/formsubmit';
+import { SubmitButton } from '../SubmitButton';
 
 
 export default function RegisterPage() {
 
 
-    const [err,seterr]=useState(false);
-
-    useEffect(()=>{
-        setTimeout(()=>{
-            seterr(false);
-        },3000);
-    },[err])
+  const [err, seterr] = useState(false);
+  const [errmessage, seterrmessage] = useState("");
+  const [loading, setloading] = useState(false);
+  // useEffect(()=>{
+  //     setTimeout(()=>{
+  //         seterr(false);
+  //     },3000);
+  // },[err])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,7 +39,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
-
+    setloading(true);
 
     try {
       const user = {
@@ -55,26 +58,43 @@ export default function RegisterPage() {
         },
         body: JSON.stringify(user),
       });
-      
 
-    
-      console.log("signing in+=-+=-=");
+      const data = await signin.json();
 
+      console.log(data);
       if (signin?.ok) {
-
-        console.log("Login successful:", signin);
-        router.push('/dashboard');
-        return
-
+        const signing = await handleCredentialsSignin(values);
+        if (signing?.status === 200) {
+          router.push('/dashboard');
+          return
+        }
+        else {
+          seterr(true);
+          seterrmessage(signing?.message || "An unexpected error occurred");
+          setTimeout(() => {
+            seterr(false);
+            seterrmessage("");
+          }, 3000);
+        }
       }
+      else {
+        seterr(true);
+        console.log(signin);
+        seterrmessage(data.message);
+        setTimeout(() => {
+          seterr(false);
+          seterrmessage("");
+        }, 3000);
+      }
+      setloading(false);
 
       seterr(true);
 
-    //   if(signin)
-
     }
-    catch (error) {
+    catch (error: any) {
+      setloading(false);
       console.error("Login error:", error);
+      console.log(error.message);
     }
 
   };
@@ -100,15 +120,15 @@ export default function RegisterPage() {
               placeholder="@example.com"
               iconSrc="/assets/icons/email.svg"
               iconAlt="user"
-              />
+            />
 
             <CustomFormField
-              fieldType={FormFieldType.INPUT}
+              fieldType={FormFieldType.PASSWORD}
               control={form.control}
               name="password"
               label="Password"
               placeholder="Enter password"
-            //   iconSrc=''
+              iconSrc='/assets/icons/password.svg'
               iconAlt="pass"
             />
 
@@ -118,13 +138,13 @@ export default function RegisterPage() {
               name="phone"
               label="Phone number"
               placeholder="(555) 123-4567"
-              />
-              {err && <p className='text-red-700 text-sm flex'>Email already registered</p>}
-            <Button type='submit' className='bg-green-500'>Register</Button>
+            />
+            {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
+            <SubmitButton label='Get Started' loading={loading} />
           </form>
         </Form>
       </div>
     </div>
 
-)
+  )
 }

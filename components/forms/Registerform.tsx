@@ -136,11 +136,6 @@ export default function Registerform() {
                 placeholder="Business/Job/Student"
               />
             </div>
-
-
-
-
-          
             <h1 className='text-white text-2xl mt-4'>Medical Information</h1>
 
             <div className='grid grid-cols-2 justify-center gap-3 m-0'>

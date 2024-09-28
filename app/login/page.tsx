@@ -4,16 +4,17 @@ import { redirect } from 'next/navigation'
 
 export default async function page() {
   const session = await auth();
-  console.log("home sessionpage ofl login")
-  
-  if(session)  {
+  console.log("LOGINPAGE")
+
+  if (session) {
     redirect('/dashboard');
   }
 
   console.log("-=-=-=-=-==");
-  
+
   return (
-    <LoginPage />
-   
+    <div>
+      <LoginPage />
+    </div>
   )
 }
