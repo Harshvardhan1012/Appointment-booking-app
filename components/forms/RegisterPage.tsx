@@ -101,7 +101,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
-      <div className="w-[500px] justify-center items-center">
+      <div className="w-[500px] justify-center items-center px-9 sm:px-6 md:px-8 lg:px-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}

@@ -14,7 +14,7 @@ import user from './../../public/assets/icons/user.svg';
 
 
 export default function Registerform() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof registerformschema>>({
     resolver: zodResolver(registerformschema),
@@ -52,7 +52,15 @@ export default function Registerform() {
         identificationDocument: values.identificationDocument,
         CurrentMedications: values.CurrentMedications
       };
-      
+      const res = await fetch("/api/auth/appointment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      const data=await res.json();
+      console.log(data);
       console.log(user);
 
     } catch (error) {
@@ -63,8 +71,8 @@ export default function Registerform() {
   };
 
   return (
-    <div className="flex justify-center items-center ">
-      <div className="w-[700px] h-screen justify-center items-center mt-[100px]">
+    <div className="flex justify-center items-center min-h-screen mb-12 mt-14">
+      <div className="w-[700px] justify-center items-center   px-9 sm:px-6 md:px-8 lg:px-0">
         <section className="mb-12 space-y-4 w-full">
           <h1 className="header text-white">Welcome</h1>
           <p className="text-dark-700">Let us know more about yourself</p>
@@ -85,7 +93,7 @@ export default function Registerform() {
               iconAlt="user"
             />
 
-            <div className='grid grid-cols-2 justify-center gap-3 m-0'>
+            <div className='grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2'>
               <CustomFormField
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
@@ -138,7 +146,7 @@ export default function Registerform() {
             </div>
             <h1 className='text-white text-2xl mt-4'>Medical Information</h1>
 
-            <div className='grid grid-cols-2 justify-center gap-3 m-0'>
+            <div className='grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2'>
               <CustomFormField
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
@@ -184,7 +192,7 @@ export default function Registerform() {
               label="Scanned Copy of Identification Document"
 
             />
-            <SubmitButton isLoading={isLoading}>Submit and Continue</SubmitButton>
+            <SubmitButton loading={loading} label='Submit and Continur'/>
           </form>
         </Form>
       </div>

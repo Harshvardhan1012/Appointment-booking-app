@@ -1,4 +1,4 @@
-import Registerform from '@/components/forms/Registerform'
+import Registerform from '@/components/forms/Dashboard'
 import React from 'react'
 import { auth } from '../auth';
 import { redirect } from 'next/navigation';
