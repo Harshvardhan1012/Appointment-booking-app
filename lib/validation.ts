@@ -6,8 +6,7 @@ export const formSchema = z.object({
   password:z.string().min(2,"min 2 char required").max(10,"max 10 char allowed"),
   email: z
     .string()
-    .email("Invalid email address") // Email validation
-    .nonempty("Email is required"), // Ensure it's not empty
+    .email("Invalid email address"), // Email validation
 
   phone: z.string().nonempty("Phone number is required"), // Ensure it's not empty
 });
@@ -23,17 +22,12 @@ export const loginformschema = z.object({
 });
 
 
-
-
 //register form schema
 export const registerformschema = z.object({
-  name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  name: z.string(),
   email: z
   .string()
-  .email("Invalid email address") // Email validation
-  .nonempty("Email is required"), // Ensure it's not empty
+  .email("Invalid email address"), // Email validation
 
   phone: z.string().nonempty("Phone number is required"), // Ensure it's not empty
   gender: z.enum(["Male", "Female", "Other"]),
@@ -50,7 +44,7 @@ export const registerformschema = z.object({
 
 //appointment form schema
 export const appointmentformschema = z.object({
-  physician: z.string(),
-  Reason: z.string(),
-  Date: z.coerce.date(),
+  physician: z.string().nonempty("Please select a physician"),
+  Reason: z.string().nonempty("Reason is required"),
+  Date: z.coerce.date()
 });

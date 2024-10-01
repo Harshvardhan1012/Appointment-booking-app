@@ -3,20 +3,21 @@ import React, { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {  loginformschema } from "../../lib/validation";
+import { loginformschema } from "../../lib/validation";
 import { Form } from "@/components/ui/form";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../ui/CustomForm";
 import email from './../../public/assets/icons/email.svg';
-import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { handleCredentialsSignin } from '@/app/actions/formsubmit';
+import { SubmitButton } from '../SubmitButton';
 
 
+export default function LoginPage() {
+  const router = useRouter();
 
-export default  function LoginPage() {
-  const [err, setErr] = useState(false);
   const [errmessage, seterrmessage] = useState("");
-
+  const [loading, setloading] = useState(false);
 
   const form = useForm<z.infer<typeof loginformschema>>({
     resolver: zodResolver(loginformschema),
@@ -25,61 +26,35 @@ export default  function LoginPage() {
       password: "",
     },
   });
-const router=useRouter();
 
   const onSubmit = async (values: z.infer<typeof loginformschema>) => {
-    console.log("submittedd===")
-    // setIsLoading(true);
-
     try {
-      const user = {
-        password: values.password,
-        email: values.email,
+      setloading(true)
+      const result = await handleCredentialsSignin(values);
+      console.log(result);
+      if (result?.message === "success") {
+        console.log(result,"00000000000-1-1-");
+        const userId=result.user;
+        router.push('/profile/' + userId);
+        return;
       };
-      console.log(user);
+      setloading(false);
+      seterrmessage(result?.message || "unexpected error");
+      setTimeout(() => {
+        seterrmessage("");
+      }, 3000);
 
-      console.log("signing in");
-
-      const signin = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      // const signin = await signIn("credentials", {  user,redirect:false} );
-
-
-      const data=await signin.json();
-
-      console.log(data);
-  
-
-      if (data.code === 500) {
-        // If there is an error, show the error message
-        setErr(true);
-        seterrmessage(data.error);
-      }
-      if (signin?.ok) {
-
-        console.log("Login successful:", signin);
-
-        router.push('/dashboard');
-
-
-      }
+    } catch (error) {
+      setloading(false);
+      console.log("An unexpected error occurred. Please try again.", error);
     }
-    catch (error) {
-      console.error("Login error:", error);
-    }
-
   };
 
   console.log("login page loadded -=-=-=++");
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
-      <div className="w-[500px] justify-center items-center">
+      <div className="w-[500px] justify-center items-center  px-9 sm:px-6 md:px-8 lg:px-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -101,16 +76,17 @@ const router=useRouter();
             />
 
             <CustomFormField
-              fieldType={FormFieldType.INPUT}
+              fieldType={FormFieldType.PASSWORD}
               control={form.control}
               name="password"
               label="Password"
               placeholder="Enter password"
-            // iconSrc={email}
+              iconSrc="/assets/icons/password.svg"
             // iconAlt="pass"
             />
-            {err && <p className='text-red-500'>{errmessage}</p>}
-            <Button type='submit' className='bg-green-500'>Get Started</Button>
+            <SubmitButton loading={loading} label="Login" />
+            {errmessage && <p className='text-red-500'>{errmessage}</p>}
+
           </form>
         </Form>
       </div>

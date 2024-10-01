@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,19 +9,16 @@ import { Form } from "@/components/ui/form";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from './../ui/CustomForm'
 import { useRouter } from 'next/navigation';
-import { Button } from './../../components/ui/button'
+import { SubmitButton } from '../SubmitButton';
 
 
 export default function RegisterPage() {
+  console.log('second');
 
-
-    const [err,seterr]=useState(false);
-
-    useEffect(()=>{
-        setTimeout(()=>{
-            seterr(false);
-        },3000);
-    },[err])
+  const [err, seterr] = useState(false);
+  const [success, setsuccess] = useState(false);
+  const [errmessage, seterrmessage] = useState("");
+  const [loading, setloading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,7 +33,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
-
+    setloading(true);
 
     try {
       const user = {
@@ -55,25 +52,30 @@ export default function RegisterPage() {
         },
         body: JSON.stringify(user),
       });
-      
 
-    
-      console.log("signing in+=-+=-=");
+      const data = await signin.json();
 
+      console.log(data);
       if (signin?.ok) {
-
-        console.log("Login successful:", signin);
-        router.push('/dashboard');
-        return
-
+          console.log("signin success",data);
+          setsuccess(true);
+          router.push(`/login`);
+          return
       }
-
-      seterr(true);
-
-    //   if(signin)
+      else {
+        seterr(true);
+        console.log(signin);
+        seterrmessage(data.message);
+        setTimeout(() => {
+          seterr(false);
+          seterrmessage("");
+        }, 3000);
+      }
+      setloading(false);
 
     }
     catch (error) {
+      setloading(false);
       console.error("Login error:", error);
     }
 
@@ -81,7 +83,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
-      <div className="w-[500px] justify-center items-center">
+      <div className="w-[500px] justify-center items-center px-9 sm:px-6 md:px-8 lg:px-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -100,15 +102,15 @@ export default function RegisterPage() {
               placeholder="@example.com"
               iconSrc="/assets/icons/email.svg"
               iconAlt="user"
-              />
+            />
 
             <CustomFormField
-              fieldType={FormFieldType.INPUT}
+              fieldType={FormFieldType.PASSWORD}
               control={form.control}
               name="password"
               label="Password"
               placeholder="Enter password"
-            //   iconSrc=''
+              iconSrc='/assets/icons/password.svg'
               iconAlt="pass"
             />
 
@@ -118,13 +120,14 @@ export default function RegisterPage() {
               name="phone"
               label="Phone number"
               placeholder="(555) 123-4567"
-              />
-              {err && <p className='text-red-700 text-sm flex'>Email already registered</p>}
-            <Button type='submit' className='bg-green-500'>Register</Button>
+            />
+            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
+            {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
+            <SubmitButton label='Get Started' loading={loading} />
           </form>
         </Form>
       </div>
     </div>
 
-)
+  )
 }

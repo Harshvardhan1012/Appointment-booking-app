@@ -6,10 +6,17 @@ import { appointmentformschema } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
+import { SubmitButton } from '../SubmitButton';
+import Link from 'next/link';
 
-export default function AppointmentFormPage() {
+export default function AppointmentFormPage({userId}:{userId:number}) {
 
+    const router = useRouter();
+
+    const [errMessage, setErrMessage] = React.useState("");
+    const [loading, setIsLoading] = React.useState(false);
+    const [success,setsuccess]=React.useState(false);
 
     const form = useForm<z.infer<typeof appointmentformschema>>({
         resolver: zodResolver(appointmentformschema),
@@ -20,27 +27,48 @@ export default function AppointmentFormPage() {
         },
     });
     const onSubmit = async (values: z.infer<typeof appointmentformschema>) => {
-
-
         try {
+            setIsLoading(true);
             const user = {
                 physician: values.physician,
                 Date: values.Date,
                 Reason: values.Reason,
             }
+            
             console.log(user);
+            const res = await fetch("/api/auth/appointment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
+            const data= await res.json();
+
+            console.log(data);
+            
+            if(res?.ok){
+                console.log("Appointment success");
+                setsuccess(true);
+                router.push('/profile/'+userId+'/appointment-form/success/'+data.appointment.id);
+                return;
+            }
+
+            setErrMessage(data?.error?? "unexpected error");
+            setTimeout(() => {
+                setErrMessage("");
+            }, 3000);
+            setIsLoading(false);
 
         } catch (error) {
+            setIsLoading(false);
             console.log(error);
         }
-
-
     };
 
     return (
-
-        <div className="flex justify-center items-center ">
-            <div className="w-[700px] h-screen justify-center items-center mt-[100px]">
+        <div className="flex justify-center items-center mt-[100px]">
+            <div className="w-[700px] justify-center items-center px-8 sm:px-5 md:px-7 lg:px-0">
                 <section className="mb-12 space-y-4 w-full">
                     <h1 className="header text-white">Hey there 👋</h1>
                     <p className="text-dark-700">Request a new appointment in 10 seconds</p>
@@ -62,7 +90,7 @@ export default function AppointmentFormPage() {
                             fieldType={FormFieldType.INPUT}
                             control={form.control}
                             name="Reason"
-                            label="Insurance Provider"
+                            label="Reason for appointment"
                             placeholder="ex: Aetna"
                            
                         />
@@ -74,13 +102,13 @@ export default function AppointmentFormPage() {
                             placeholder="DD/MM/YYYY"
                             iconAlt="calendar"
                         />
-                    <Button type='submit' className='shad-primary-btn w-full'>Submit and Continue</Button>
+            
+                    <SubmitButton loading={loading} label="Submit and Continue" />
+                        {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
                     </form>
                 </Form>
             </div>
         </div>
-
-
 
     )
 }

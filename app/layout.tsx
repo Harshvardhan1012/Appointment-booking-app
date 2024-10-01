@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn('min-h-screen bg-dark-300 font-sans antialiased p-4 md:p-0',fontSans.variable)}
+        className={cn('bg-dark-300 font-sans antialiased',fontSans.variable)}
       >
           <ThemeProvider
             attribute="class"

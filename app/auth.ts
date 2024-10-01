@@ -1,58 +1,75 @@
 // "use server"
-import NextAuth from "next-auth"
-import  Credentials  from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import prisma from "../lib/db"
-import { User } from "@prisma/client"
+import NextAuth, { CredentialsSignin, User } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import prisma from "../lib/db";
 
-
-
-export const { auth, handlers, signIn, signOut } =NextAuth({
-adapter: PrismaAdapter(prisma),
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        password: { label: "Username", type: "text" },
+        email: { label: "Email", type: "email" },
+      },
+      authorize: async (credentials: { email: string; password: string }) => {
+        try {
+          const { password, email } = credentials;
+          console.log("inside auth function");
+          const user = await prisma.user.findUnique({
+            where: {
+              password,
+              email,
+            },
+          });
 
-  Credentials({
-    name:"Credentials",
-    credentials:{
-      password:{label:"Username",type:"text"},
-      email:{label:"Email",type:"email"},
-    },
-    authorize:async(credentials:User)=>{
-      const { password,email } = credentials;
+          console.log(user);
 
-      try{
+          if (!user) {
+            throw new CredentialsSignin({ status: 401 });
+          }
 
-        console.log("inside auth function");
-      const user = await prisma.user.findUnique({
-        where:{
-          password,
-          email
+          if (!user.password) {
+            throw new CredentialsSignin({ status: 401 });
+          }
+
+          console.log("user found");
+
+          return user;
+        } catch (err) {
+          console.log(err, "error");
         }
-      })
+      },
+    }),
+  ],
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.AUTH_SECRET,
+  pages: {
+    signIn: "/login",
+  },
 
-      if (!user || user.password !== password) {
-        console.log("Invalid credentials");
-        throw new Error("Invalid email or password");  // Throw a custom error message
-      }
-      console.log(user);
-
-
+  callbacks: {
+    async jwt({ token, user }) {
       if (user) {
-        return user;
+        return {
+          ...token,
+          id: user.id,
+          email: user.email,
+        };
       }
-      return null;
-
-    }catch(err){
-      console.log(err,"error");
-    }
-    }
-}),
-] ,      
-  session:{
-   strategy:"jwt",    
+      return token;
+    },
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          id: token.sub,
+          email: token.email,
+        },
+      };
+    },
   },
-  pages:{
-    signIn:"/login",
-  },
-
-})
+});

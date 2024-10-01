@@ -5,16 +5,12 @@ import RegisterPage from "@/components/forms/RegisterPage";
 
 export default async function Home() {
   const session = await auth();
-
-  
-  console.log(session,"session");
-
-
- if(session){
-  redirect("/dashboard");
- }
+  console.log("first")
+  if (session) {
+    redirect("/profile/" + session?.user?.id);
+  }
 
   return (
-    <RegisterPage/>
+    <RegisterPage />
   )
 }

@@ -1,7 +1,7 @@
 "use client";
 import { registerformschema } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react'
+import React, {  useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import "react-phone-number-input/style.css";
@@ -10,12 +10,20 @@ import { SubmitButton } from '../SubmitButton';
 import { Form } from "@/components/ui/form";
 import email from './../../public/assets/icons/email.svg';
 import user from './../../public/assets/icons/user.svg';
+import {  useRouter } from 'next/navigation';
 
 
-
-export default function Registerform() {
-  const [isLoading, setIsLoading] = useState(false);
-
+export default function Dashboard({userId}:{userId:number}) {
+  
+  
+  const router=useRouter();
+  // router.refresh();
+  // useLayoutEffect(() => {
+  //   router.refresh();
+  // },[]);
+  
+  const [loading, setIsLoading] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
   const form = useForm<z.infer<typeof registerformschema>>({
     resolver: zodResolver(registerformschema),
     defaultValues: {
@@ -26,18 +34,24 @@ export default function Registerform() {
       gender: "Male",
       Address: "",
       Occupation: "",
-      InsuranceId:"",
-      InsuranceProvider:"",
-      Allergies:"",
+      InsuranceId: "",
+      InsuranceProvider: "",
+      Allergies: "",
       identificationDocument: [],
-      CurrentMedications:"",
+      CurrentMedications: "",
     },
   });
 
+  // console.log("session", session)
+  // if(session){
+  //   console.log("session------")
+  // }
+
+
+
   const onSubmit = async (values: z.infer<typeof registerformschema>) => {
     setIsLoading(true);
-
-    try {
+    
       const user = {
         name: values.name,
         email: values.email,
@@ -52,23 +66,43 @@ export default function Registerform() {
         identificationDocument: values.identificationDocument,
         CurrentMedications: values.CurrentMedications
       };
-      
+
+   
+      const res = await fetch("/api/auth/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+   
+      console.log(res);
+      if (res?.ok) {
+
+        console.log("Profile created successfully");
+        
+        // router.push('/appointment-form');
+        router.push("/profile/"+userId+"/appointment-form");
+      //   console.log("Profile created successfully");
+      //   router.push('/appointment-form');
+        return;
+      }
+      const data = await res.json();
+      console.log(data);
+
+      setErrMessage(data?.error ?? "unexpected error");
+      console.log(data.message);
       console.log(user);
+      setIsLoading(false);
 
-    } catch (error) {
-      console.log(error);
-    }
-
+    
+    
     setIsLoading(false);
   };
 
   return (
-    <div className="flex justify-center items-center ">
-      <div className="w-[700px] h-screen justify-center items-center mt-[100px]">
-        <section className="mb-12 space-y-4 w-full">
-          <h1 className="header text-white">Welcome</h1>
-          <p className="text-dark-700">Let us know more about yourself</p>
-        </section>
+
+    
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -85,7 +119,7 @@ export default function Registerform() {
               iconAlt="user"
             />
 
-            <div className='grid grid-cols-2 justify-center gap-3 m-0'>
+            <div className='grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2'>
               <CustomFormField
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
@@ -136,14 +170,9 @@ export default function Registerform() {
                 placeholder="Business/Job/Student"
               />
             </div>
-
-
-
-
-          
             <h1 className='text-white text-2xl mt-4'>Medical Information</h1>
 
-            <div className='grid grid-cols-2 justify-center gap-3 m-0'>
+            <div className='grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2'>
               <CustomFormField
                 fieldType={FormFieldType.INPUT}
                 control={form.control}
@@ -175,13 +204,10 @@ export default function Registerform() {
                 label="Current Medications"
                 placeholder="ex:paraacetamol"
               />
-              
+
 
             </div>
-
-            <section className="mb-12 space-y-4 w-full">
-              <h1 className="header">Identification</h1>
-            </section>
+            <h1 className='text-white text-2xl mt-4'>Verification Documents</h1>
             <CustomFormField
               fieldType={FormFieldType.SKELETON}
               control={form.control}
@@ -189,10 +215,12 @@ export default function Registerform() {
               label="Scanned Copy of Identification Document"
 
             />
-            <SubmitButton isLoading={isLoading}>Submit and Continue</SubmitButton>
+            <SubmitButton loading={loading} label='Submit and Continue' />
+            {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
           </form>
         </Form>
-      </div>
-    </div>
+  
   );
 }
+
+
