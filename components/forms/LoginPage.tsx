@@ -15,7 +15,7 @@ import { SubmitButton } from '../SubmitButton';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [err, setErr] = useState(false);
+
   const [errmessage, seterrmessage] = useState("");
   const [loading, setloading] = useState(false);
 
@@ -31,21 +31,19 @@ export default function LoginPage() {
     try {
       setloading(true)
       const result = await handleCredentialsSignin(values);
-      setloading(false);
-
+      console.log(result);
       if (result?.message === "success") {
-        router.push('/dashboard');
+        console.log(result,"00000000000-1-1-");
+        const userId=result.user;
+        router.push('/profile/' + userId);
         return;
       };
+      setloading(false);
+      seterrmessage(result?.message || "unexpected error");
+      setTimeout(() => {
+        seterrmessage("");
+      }, 3000);
 
-      if (result?.message) {
-        setErr(true);
-        seterrmessage(result.message);
-        setTimeout(() => {
-          setErr(false);
-          seterrmessage("");
-        }, 3000);
-      }
     } catch (error) {
       setloading(false);
       console.log("An unexpected error occurred. Please try again.", error);
@@ -86,8 +84,8 @@ export default function LoginPage() {
               iconSrc="/assets/icons/password.svg"
             // iconAlt="pass"
             />
-            {err && <p className='text-red-500'>{errmessage}</p>}
             <SubmitButton loading={loading} label="Login" />
+            {errmessage && <p className='text-red-500'>{errmessage}</p>}
 
           </form>
         </Form>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,22 +9,16 @@ import { Form } from "@/components/ui/form";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from './../ui/CustomForm'
 import { useRouter } from 'next/navigation';
-import { Button } from './../../components/ui/button'
-import { handleCredentialsSignin } from '@/app/actions/formsubmit';
 import { SubmitButton } from '../SubmitButton';
 
 
 export default function RegisterPage() {
-
+  console.log('second');
 
   const [err, seterr] = useState(false);
+  const [success, setsuccess] = useState(false);
   const [errmessage, seterrmessage] = useState("");
   const [loading, setloading] = useState(false);
-  // useEffect(()=>{
-  //     setTimeout(()=>{
-  //         seterr(false);
-  //     },3000);
-  // },[err])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,19 +57,10 @@ export default function RegisterPage() {
 
       console.log(data);
       if (signin?.ok) {
-        const signing = await handleCredentialsSignin(values);
-        if (signing?.status === 200) {
-          router.push('/dashboard');
+          console.log("signin success",data);
+          setsuccess(true);
+          router.push(`/login`);
           return
-        }
-        else {
-          seterr(true);
-          seterrmessage(signing?.message || "An unexpected error occurred");
-          setTimeout(() => {
-            seterr(false);
-            seterrmessage("");
-          }, 3000);
-        }
       }
       else {
         seterr(true);
@@ -88,13 +73,10 @@ export default function RegisterPage() {
       }
       setloading(false);
 
-      seterr(true);
-
     }
-    catch (error: any) {
+    catch (error) {
       setloading(false);
       console.error("Login error:", error);
-      console.log(error.message);
     }
 
   };
@@ -139,6 +121,7 @@ export default function RegisterPage() {
               label="Phone number"
               placeholder="(555) 123-4567"
             />
+            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
             {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
             <SubmitButton label='Get Started' loading={loading} />
           </form>

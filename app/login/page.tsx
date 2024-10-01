@@ -1,20 +1,15 @@
-import LoginPage from "@/components/forms/LoginPage";
-import { auth } from "@/app/auth";
-import { redirect } from 'next/navigation'
+import LoginPage from '@/components/forms/LoginPage'
+import React from 'react'
+import { auth } from '../auth';
+import { redirect } from 'next/navigation';
 
 export default async function page() {
-  const session = await auth();
-  console.log("LOGINPAGE")
+    const session=await auth();
 
-  if (session) {
-    redirect('/dashboard');
-  }
-
-  console.log("-=-=-=-=-==");
-
+    if(session){
+        redirect("/profile/" + session?.user?.id);
+    }
   return (
-    <div>
-      <LoginPage />
-    </div>
+    <LoginPage/>
   )
 }

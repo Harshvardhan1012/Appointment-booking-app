@@ -178,7 +178,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
           {props.iconSrc && (
             <Image
               src={props.iconSrc}
-              height={24}
+              height={20}
               width={24}
               alt={props.iconAlt || "icon"}
               className="ml-3"

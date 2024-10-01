@@ -1,7 +1,5 @@
 import React from 'react'
 import { Button } from './ui/button'
-import Image from 'next/image'
-import loader from './../public/assets/icons/loader.svg'
 
 interface ButtonProps {
   loading: boolean
@@ -12,7 +10,7 @@ interface ButtonProps {
 export const SubmitButton = ({ loading, label, className }: ButtonProps) => {
   return (
     <>
-      <Button type="submit" className={className ?? "shad-primary-btn w-full"}>
+      <Button type='submit' disabled={loading} className={className ?? "shad-primary-btn w-full"}>
 
         {loading &&
           <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

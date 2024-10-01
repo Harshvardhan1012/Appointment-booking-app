@@ -1,50 +1,60 @@
 import { auth } from "@/app/auth";
 import prisma from "@/lib/db";
-import { appointmentformschema } from "@/lib/validation";
-import { redirect } from "next/navigation";
-import { NextResponse } from 'next/server';
-
-
+import { Prisma } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-   
+  const body = await req.json();
   try {
-    const body = await req.json(); // Parse JSON from the request body
-
     const session = await auth();
-
-    if (!session) {
-      return redirect("/login");
-    }
-    console.log(session);
-    // Create the user with Prisma
-    const user = await prisma.profile.create({
+    console.log("SESSION", session);
+   const appointment= await prisma.appointment.create({
       data: {
+        physician: body.physician,
+        Reason: body.Reason,
+        Date: new Date(),
         user: {
-          connect: { id: Number(session?.user?.id) } // Assuming userId is provided in the request body
+          connect: { id: Number(session?.user?.id) }, // Assuming userId is provided in the request body
         },
-        name: body.name,
-        email: body.email,
-        phone: body.phone,
-        gender: body.gender,
-        dob: body.dob,
-        Address: body.Address,
-        Occupation: body.Occupation,
-        identificationDocument: body.identificationDocument,
-        InsuranceId: body.InsuranceId,
-        InsuranceProvider: body.InsuranceProvider,
-        Allergies: body.Allergies,
-        CurrentMedications: body.CurrentMedications,
       },
     });
-
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json({message:'appointment requested',appointment}, { status: 201 });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error creating appointment:", error);
+
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    // Handle specific Prisma errors
+    if (error.code === "P2002") {
+      // Unique constraint violation
+      return NextResponse.json(
+        { error: "Appointment with this physician already exists" },
+        { status: 400 }
+      );
+    } else if (error.code === "P1013") {
+      // Invalid input
+      return NextResponse.json(
+        { error: "Invalid input data" },
+        { status: 400 }
+      );
+    } else {
+      // Other Prisma errors
+      return NextResponse.json(
+        { error: "Unexpected connection error" },
+        { status: 500 }
+      );
+    }
+  } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
+    // Network error
     return NextResponse.json(
-      { message: "Internal server error", error: (error as Error).message },
+      { error: "Network error" },
+      { status: 500 }
+    );
+  } else {
+    // Unknown error
+    return NextResponse.json(
+      { error: "Unexpected error" },
       { status: 500 }
     );
   }
+  }
 }
-
