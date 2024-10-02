@@ -20,6 +20,12 @@ enum Gender {
   Other
 }
 
+enum Status {
+  Pending
+  Approved
+  Rejected
+}
+
 model User {
   id               Int           @id @default(autoincrement())
   email            String        @unique
@@ -51,14 +57,15 @@ model Profile {
 }
 
 model Appointment {
-  id        Int      @id @default(autoincrement())
-  physician String
-  Reason    String
-  Date      DateTime
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  physician         String
+  Reason            String
+  Date              DateTime
+  user              User     @relation(fields: [userId], references: [id])
+  userId            Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  AppointmentStatus Status   @default(Pending)
 
   @@unique([userId, physician]) // Enforces one appointment per physician per user
 }

@@ -13,14 +13,16 @@ import user from './../../public/assets/icons/user.svg';
 import {  useRouter } from 'next/navigation';
 
 
-export default function Dashboard({userId}:{userId:number}) {
+export default function Dashboard({userId,profile}:{userId:number,profile:boolean}) {
   
-  
+
   const router=useRouter();
-  // router.refresh();
-  // useLayoutEffect(() => {
-  //   router.refresh();
-  // },[]);
+  useLayoutEffect(() => {
+    router.refresh();
+  if(profile){
+    router.push('/profile/'+userId+'/appointment-form');
+  }
+  },[router]);
   
   const [loading, setIsLoading] = useState(false);
   const [errMessage, setErrMessage] = useState("");

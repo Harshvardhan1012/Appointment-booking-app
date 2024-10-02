@@ -58,3 +58,17 @@ export async function POST(req: Request) {
   }
   }
 }
+
+
+export async function appointmentfind() {
+
+  try {
+    const appointments = await prisma.appointment.findMany();
+   return appointments;
+    
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    return false;
+    
+  }
+} 

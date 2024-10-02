@@ -1,6 +1,4 @@
 import { AuthError } from "next-auth";
-import { signIn } from "../auth";
-import { headers } from "next/headers";
 
 export async function handleCredentialsSignin({
   email,
@@ -20,8 +18,8 @@ export async function handleCredentialsSignin({
       body: JSON.stringify({ email, password }),
     });
     console.log(signin,"singinifdsfdfdsf") ;
-    const data = await signin.json();
-    console.log(data,'data=====');
+   
+    const data=await signin.json();
     if (signin) {
       console.log("signin success");
       return {

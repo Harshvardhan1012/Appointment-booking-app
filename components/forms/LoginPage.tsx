@@ -31,7 +31,7 @@ export default function LoginPage() {
     try {
       setloading(true)
       const result = await handleCredentialsSignin(values);
-      console.log(result);
+      
       if (result?.message === "success") {
         console.log(result,"00000000000-1-1-");
         const userId=result.user;
