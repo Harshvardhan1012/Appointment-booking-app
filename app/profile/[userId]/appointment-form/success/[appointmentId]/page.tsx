@@ -1,9 +1,9 @@
 import { auth } from "@/app/auth";
-import prisma from "@/lib/db";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import success from "./../../../../../../public/assets/icons/check-circle.svg";
 import Link from "next/link";
+import { appointmentfind } from "@/app/api/auth/appointmentfind/route";
 
 
 export default async function Page({ params }: { params: { userId: number, appointmentId: number } }) {
@@ -13,15 +13,12 @@ export default async function Page({ params }: { params: { userId: number, appoi
   console.log("appointmentId", params.appointmentId);
   console.log("search", params.userId);
   if (session?.user?.id !== userId.toString()) {
+    //page not found redirect 
     redirect('/login');
   }
 
 
-  const appointment = await prisma.appointment.findUnique({
-    where: {
-      id: Number(appointmentId)
-    }
-  });
+ const appointment = await appointmentfind(Number(appointmentId));
   console.log(appointment);
   if (!appointment) {
     redirect('/profile/' + userId + '/appointment-form');

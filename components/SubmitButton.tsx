@@ -1,16 +1,18 @@
 import React from 'react'
 import { Button } from './ui/button'
+import { cn } from '@/lib/utils'
 
 interface ButtonProps {
   loading: boolean
   className?: string
   label: string
+  onClick?: () => void
 }
 
-export const SubmitButton = ({ loading, label, className }: ButtonProps) => {
+export const SubmitButton = ({ loading, label, className,onClick }: ButtonProps) => {
   return (
     <>
-      <Button type='submit' disabled={loading} className={className ?? "shad-primary-btn w-full"}>
+      <Button type='submit' disabled={loading} className={cn("shad-primary-btn w-full",className)} onClick={onClick}>
 
         {loading &&
           <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

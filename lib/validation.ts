@@ -48,3 +48,15 @@ export const appointmentformschema = z.object({
   Reason: z.string().nonempty("Reason is required"),
   Date: z.coerce.date()
 });
+
+
+export const scheduleFormSchema = z.object({
+  physician: z.string().nonempty("Please select a physician"),
+  Remarks: z.string().nonempty("Reason is required"),
+  ExpectedDate: z.coerce.date(),
+ 
+});
+
+export const cancellationformschema = z.object({
+  CancellationReason: z.string().nonempty("Reason is required")
+});

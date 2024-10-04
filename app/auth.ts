@@ -1,5 +1,5 @@
 // "use server"
-import NextAuth, { CredentialsSignin, User } from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "../lib/db";
@@ -61,6 +61,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         };
       }
       return token;
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+     console.log("signin", user, account, profile, email, credentials);
+     return true;
     },
     async session({ session, token }) {
       return {

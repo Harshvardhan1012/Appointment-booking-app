@@ -59,6 +59,7 @@ interface CustomProps<T extends FieldValues> {
   showTimeSelect?: boolean;
   children?: React.ReactNode;
   fieldType: FormFieldType;
+  readonly?: boolean;
 }
 
 const RenderInput = <T extends FieldValues>({ field, props }: { field: ControllerRenderProps<T>; props: CustomProps<T> }) => {
@@ -82,6 +83,7 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
             <Input
               placeholder={props.placeholder}
               {...field}
+              readOnly={props.readonly}
               className="shad-input border-0 text-white bg-black"
             />
           </FormControl>
