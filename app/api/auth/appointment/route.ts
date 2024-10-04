@@ -60,6 +60,7 @@ export async function POST(req: Request) {
 }
 
 
+
 export async function appointmentfind() {
 
   try {
@@ -69,6 +70,5 @@ export async function appointmentfind() {
   } catch (error) {
     console.error("Error fetching appointments:", error);
     return false;
-    
   }
 } 

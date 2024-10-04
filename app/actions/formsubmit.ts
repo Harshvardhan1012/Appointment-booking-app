@@ -1,4 +1,7 @@
+import { scheduleFormSchema } from "@/lib/validation";
 import { AuthError } from "next-auth";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 export async function handleCredentialsSignin({
   email,
@@ -48,3 +51,15 @@ export async function handleCredentialsSignin({
     };
   }
 }
+
+
+// export const schedular = async(appointment:number) => {   
+//   const schedule=await appointmentupdate(appointment,'Approved');
+//   console.log(schedule);
+// }
+
+// export const cancelappointment = async(appointment:number) => {
+//   const cancel=await appointmentupdate(appointment,"Rejected");
+//   console.log(cancel);
+// }
+

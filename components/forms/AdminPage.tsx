@@ -1,46 +1,66 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { TableBody, TableCell, TableRow } from '../ui/table'
+import { DialogboxSchedule } from '../ui/DialogboxSchedule'
 import { Button } from '../ui/button'
-import { appointmentupdate } from '@/app/api/auth/appointmentfind/route'
-import { InferGetServerSidePropsType } from 'next'
+import { Dialog, DialogTrigger } from '../ui/dialog'
+import { DialogboxCancel } from '../ui/DialogboxCancel'
+import { Router } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
-export default function AdminPage({appointment,schedule}:{appointment:any,schedule: InferGetServerSidePropsType<typeof getServerSideProps>}) {
+export default function AdminPage({ appointment }: { appointment: any }) {
+    const [open1, setOpen1] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
 
+    const router = useRouter();
+    useEffect(() => {
+        router.refresh();
+    }, [router]);
 
-    console.log(schedule,'342222222222222222222222222222222222222222222222222');
-    const schedular = async() => {   
-        const schedule=await appointmentupdate(appointment.id,'Approved');
-        console.log(schedule);
-    }
-
-    const cancelappointment = async() => {
-        const cancel=await appointmentupdate(appointment.id,"Rejected");
-        console.log(cancel);
+    const scheduleopener = (e:string) => {
+        // router.refresh();
+        router.push(`/admin?name=${e}`);
+        setOpen1(true);
     }
     return (
-        <TableBody>
-            {appointment.map((e:any) => (
-                <TableRow key={e.id}>
-                    <TableCell className="font-medium">{e.userId}</TableCell>
-                    <TableCell>{e.AppointmentStatus}</TableCell>
-                    <TableCell>{e.Date.getUTCDate()}-{e.Date.toLocaleString('default', { month: 'long' })}-{e.Date.getUTCFullYear()}</TableCell>
-                    <TableCell>{e.physician}</TableCell>
-                    <TableCell className="text-right">
-                        <Button className=" text-green-500" onClick={schedular}>Schedule</Button>
-                        <Button className="text-red-500" onClick={cancelappointment}>Cancel</Button>
-                    </TableCell>
-                </TableRow>
-            ))}
-        </TableBody>
+        <>
+            <TableBody>
+                {appointment.map((e: any) => (
+                    <TableRow key={e.id}>
+                        <TableCell className="font-medium">{e.userId}</TableCell>
+                        <TableCell
+                            className={
+                                e.AppointmentStatus === 'Approved'
+                                    ? 'text-green-500'
+                                    : e.AppointmentStatus === 'Rejected'
+                                        ? 'text-red-500'
+                                        : 'text-blue-500' // Default for 'Pending' or other statuses
+                            }
+                        >
+                            {e.AppointmentStatus}
+                        </TableCell>
+                        <TableCell>{e.Date.getUTCDate()}-{e.Date.toLocaleString('default', { month: 'long' })}-{e.Date.getUTCFullYear()}</TableCell>
+                        <TableCell>{e.physician}</TableCell>
+                        <TableCell className="text-right">
+                            <Dialog open={open1} onOpenChange={setOpen1}>
+
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" onClick={()=>scheduleopener(e.physician)}>Schedule</Button>
+                                </DialogTrigger>
+                                <DialogboxSchedule key={e.id} title='enter' description='Select date and add remarks for scheduling an appointment' id={e.id} physician={e.physician} setOpen={setOpen1} />
+                            </Dialog>
+                            <Dialog open={open2} onOpenChange={setOpen2}>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" onClick={() => setOpen2(true)}>Cancel</Button>
+                                </DialogTrigger>
+                                <DialogboxCancel key={e.id} setOpen={setOpen2} title='enter' description='Select date and add remarks for scheduling an appointment' id={e.id} />
+                            </Dialog>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </>
     )
 }
 
 
-export const getServerSideProps = (async (appointmentId:number) => {
-    // Fetch data from external API
-    const schedule=await appointmentupdate(appointmentId,'Approved');
-    console.log(schedule);
-    // Pass data to the page via props
-    return { props: { schedule } }
-  }) 

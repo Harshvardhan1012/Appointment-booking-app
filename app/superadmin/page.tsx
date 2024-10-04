@@ -1,18 +1,20 @@
 import Image from "next/image";
 import { Doctors } from "../constants";
 import { StatCard } from "@/components/ui/StatCard";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { appointmentfind } from "../api/auth/appointment/route";
-import { Button } from "@/components/ui/button";
-import { appointmentcount } from "../api/auth/appointmentfind/route";
-import AdminPage from "@/components/forms/AdminPage";
+import { appointmentcount } from "@/lib/action/appointment.action";
+import { appointmentfind } from "@/lib/action/appointment.action";
+import { DataTable } from "@/components/forms/table/DataTable";
+import { columns } from "@/components/forms/table/columns";
+
 
 export default async function page() {
 
   const appointment = await appointmentfind();
-  const count=await appointmentcount();
+  const count = await appointmentcount();
 
-  if(!count){
+  console.log("allleeddddddddddddddddddddddddddddddd");
+
+  if (!count) {
     return <h1>no count</h1>
   }
   if (!appointment) {
@@ -37,7 +39,7 @@ export default async function page() {
         <div className="text-sm">Manage appointments here</div>
 
       </div>
-      <div className="flex justify-center items-center gap-4 h-[152px] px-5">
+      <div className="flex  justify-center items-center gap-4 h-[152px] px-4">
         <StatCard
           type="appointments"
           count={count.ApprovedCount}
@@ -57,34 +59,9 @@ export default async function page() {
           icon={"/assets/icons/cancelled.svg"}
         />
       </div>
-
-
       <div className="px-5 text-white">
-        <Table className="">
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">userID</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead className="text-left">Physician</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-
-            </TableRow>
-          </TableHeader>
-          <AdminPage appointment={appointment} />
-          {/* <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
-            </TableRow>
-          </TableFooter> */}
-        </Table>
+        <DataTable columns={columns} data={appointment} />
       </div>
-
-
-
-
     </div >
   )
 }

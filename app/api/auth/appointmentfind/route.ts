@@ -1,5 +1,8 @@
 import prisma from "@/lib/db";
 import { Status } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
 
 export const appointmentfind = async (appointmentId: number) => {
   try {
@@ -48,20 +51,32 @@ export const appointmentcount = async () => {
 };
 
 
-export const appointmentupdate = async (appointmentId: number, status: Status) => {
+export async function PUT(req: Request,res:NextApiResponse) {
+  const { appointmentId, status } = await req.json();
+ 
+
+
+  if (!appointmentId || !status) {
+    return NextResponse.json({ message: 'Missing appointmentId or status' },{status:400});
+  }
+
   try {
     const appointment = await prisma.appointment.update({
       where: {
         id: Number(appointmentId),
       },
       data: {
-        AppointmentStatus: status,
+        AppointmentStatus: status as Status,
       },
     });
-    console.log(appointment,'dsfkdskjfkjfkjfdkjfdsf');
-    return appointment;
+    console.log(appointment, 'Appointment updated successfully');
+    
+    return NextResponse.json(appointment);
   } catch (error) {
-    console.error("Error creating user:", error);
-    return false;
+    console.error('Error updating appointment:', error);
+    return NextResponse.json({ message: 'Error updating appointment' });
   }
+
 }
+
+
