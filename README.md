@@ -2,8 +2,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 First,migrate the database using prisma
+```bash
 npx prisma migrate dev
-First, run the development server:
+```
+Then, run the development server:
 
 ```bash
 npm run dev
