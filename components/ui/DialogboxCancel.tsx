@@ -1,14 +1,12 @@
 "use client"
-import { Button } from "@/components/ui/button"
 import {
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useForm } from "react-hook-form";
 import { Form } from "./form";
 import "react-phone-number-input/style.css";
@@ -67,7 +65,7 @@ export function DialogboxCancel({ title, description, id ,setOpen }: { title: st
 
     return (
 
-        <DialogContent className="sm:max-w-[425px] text-white">
+        <DialogContent className="sm:max-w-[425px] text-white  border-dark-400  bg-dark-400">
             <DialogHeader>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogDescription>

@@ -20,7 +20,12 @@ export const loginformschema = z.object({
   .email("Invalid email address") // Email validation
 
 });
-
+export const doctorRegisterSchema=z.object({
+  FullName:z.string().nonempty("Name is required"),
+  username:z.string().nonempty("username is required"),
+  password:z.string().nonempty("password is required"),
+  ProfilePhoto: z.custom<File[]>().optional(),
+})
 
 //register form schema
 export const registerformschema = z.object({

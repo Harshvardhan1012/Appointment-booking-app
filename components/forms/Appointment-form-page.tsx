@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { SubmitButton } from '../SubmitButton';
-import Link from 'next/link';
 
 export default function AppointmentFormPage({userId}:{userId:number}) {
 
@@ -16,7 +15,7 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
 
     const [errMessage, setErrMessage] = React.useState("");
     const [loading, setIsLoading] = React.useState(false);
-    const [success,setsuccess]=React.useState(false);
+
 
     const form = useForm<z.infer<typeof appointmentformschema>>({
         resolver: zodResolver(appointmentformschema),
@@ -42,14 +41,15 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(user),
+                cache: "no-cache",
             });
             const data= await res.json();
-
+            console.log(res);
             console.log(data);
             
             if(res?.ok){
                 console.log("Appointment success");
-                setsuccess(true);
+              
                 router.push('/profile/'+userId+'/appointment-form/success/'+data.appointment.id);
                 return;
             }
@@ -103,7 +103,7 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
                             iconAlt="calendar"
                         />
             
-                    <SubmitButton loading={loading} label="Submit and Continue" />
+                    <SubmitButton loading={loading} label="Submit and Continue" className='bg-green-500' />
                         {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
                     </form>
                 </Form>

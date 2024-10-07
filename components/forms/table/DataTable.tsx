@@ -6,7 +6,6 @@ import {
     getCoreRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    SortingState,
     useReactTable,
 } from "@tanstack/react-table"
 
@@ -18,9 +17,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useEffect, useState } from "react"
-import { Router } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { Button } from "../../ui/button"
 import Image from "next/image"
 

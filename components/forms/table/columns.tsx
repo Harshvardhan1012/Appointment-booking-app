@@ -1,14 +1,13 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client"
 
 import { Status } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import { Dialog, DialogTrigger } from "../../ui/dialog"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Button } from "../../ui/button"
 import { DialogboxSchedule } from "../../ui/DialogboxSchedule"
 import { DialogboxCancel } from "../../ui/DialogboxCancel"
-import { Router } from "lucide-react"
-import { useRouter } from "next/navigation"
 import check from '@/public/assets/icons/check.svg';
 import pending from '@/public/assets/icons/pending.svg';
 import cancelled from '@/public/assets/icons/cancelled.svg';
@@ -132,8 +131,8 @@ export const columns: ColumnDef<Appointmenttable>[] = [
         },
         cell: ({ row }) => {
             const e = row.original
-            const [open1, setOpen1] = React.useState(false);
-            const [open2, setOpen2] = React.useState(false);
+            const [open1, setOpen1] = useState(false);
+            const [open2, setOpen2] = useState(false);
            
 
             return (

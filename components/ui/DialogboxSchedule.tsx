@@ -1,14 +1,12 @@
 // "use client"
-import { Button } from "@/components/ui/button"
 import {
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useForm } from "react-hook-form";
 import { Form } from "./form";
 import "react-phone-number-input/style.css";
@@ -17,7 +15,6 @@ import { scheduleFormSchema } from "@/lib/validation"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitButton } from "../SubmitButton";
-import { revalidatePath } from "next/cache";
 import clearCachesByServerAction from "@/app/superadmin/revalidate";
 
 
@@ -53,7 +50,7 @@ export function DialogboxSchedule({ title, description, id, physician, setOpen }
                 }
             })
             await clearCachesByServerAction('/superadmin');
-            
+
             console.log("appointment approved");
             setloading(false);
             setOpen(false);
@@ -68,7 +65,7 @@ export function DialogboxSchedule({ title, description, id, physician, setOpen }
 
     return (
 
-        <DialogContent className="sm:max-w-[425px] text-white">
+        <DialogContent className="sm:max-w-[425px] text-white bg-dark-400 border-dark-400">
             <DialogHeader>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogDescription>
@@ -77,6 +74,7 @@ export function DialogboxSchedule({ title, description, id, physician, setOpen }
             </DialogHeader>
             <Form {...form}>
                 <form
+                    tabIndex={0}
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="flex-1 space-y-6 w-full"
                 >
@@ -85,7 +83,6 @@ export function DialogboxSchedule({ title, description, id, physician, setOpen }
                         fieldType={FormFieldType.INPUT}
                         control={form.control}
                         name="physician"
-                        
                         label="Doctor"
                         readonly
                     />
