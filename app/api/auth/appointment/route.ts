@@ -7,7 +7,6 @@ export async function POST(req: Request) {
   const body = await req.json();
   try {
     const session = await auth();
-    console.log("SESSION", session);
     if(!body.physician || !body.Reason){
       return NextResponse.json({message:'invalid inputs'});
     }
