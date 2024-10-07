@@ -123,7 +123,7 @@ export default function RegisterPage() {
             />
             {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
             {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
-            <SubmitButton label='Get Started' loading={loading} />
+            <SubmitButton label='Get Started' loading={loading} buttonColor='green'/>
           </form>
         </Form>
       </div>

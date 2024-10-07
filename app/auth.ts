@@ -1,46 +1,51 @@
 // "use server"
-import NextAuth, { CredentialsSignin } from "next-auth";
+import NextAuth, { CredentialsSignin, User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "../lib/db";
+import { loginformschema } from "@/lib/validation";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
-      name: "Credentials",
       credentials: {
-        password: { label: "Username", type: "text" },
-        email: { label: "Email", type: "email" },
+        email: {label:"email", type: "email" },
+        password: {label:"password", type: "password" },
       },
-      authorize: async (credentials: { email: string; password: string }) => {
+       async authorize(credentials) {
         try {
-          const { password, email } = credentials;
-          console.log("inside auth function");
+          console.log(credentials, "credentials");
+          if (!credentials || !credentials.email || !credentials.password) return null;
+      
+          const validate = loginformschema.safeParse(credentials);
+          if (!validate.success) {
+            throw new CredentialsSignin({ status: 401 });
+          }
+      
           const user = await prisma.user.findUnique({
             where: {
-              password,
-              email,
+              email: validate.data.email,
+              password: validate.data.password,
             },
           });
-
-          console.log(user);
-
+      
           if (!user) {
             throw new CredentialsSignin({ status: 401 });
           }
-
-          if (!user.password) {
-            throw new CredentialsSignin({ status: 401 });
-          }
-
-          console.log("user found");
-
-          return user;
+      
+          // Map the Prisma user to the NextAuth User type (adjust this based on what NextAuth expects)
+         
+          const User: User = {
+            id: user.id.toString(),
+            email: user.email,
+          };
+          return User;  // Return a type compatible with NextAuth User
         } catch (err) {
           console.log(err, "error");
+          return null;  // Ensure null is returned on error, not undefined
         }
-      },
+      }
     }),
   ],
   session: {
@@ -62,10 +67,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return token;
     },
-    async signIn({ user, account, profile, email, credentials }) {
-     console.log("signin", user, account, profile, email, credentials);
-     return true;
-    },
     async session({ session, token }) {
       return {
         ...session,
@@ -76,4 +77,5 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       };
     },
   },
+  trustHost: true
 });

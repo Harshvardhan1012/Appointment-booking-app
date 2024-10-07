@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,7 +15,9 @@ import { SubmitButton } from '../SubmitButton';
 
 export default function LoginPage() {
   const router = useRouter();
-
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
   const [errmessage, seterrmessage] = useState("");
   const [loading, setloading] = useState(false);
 

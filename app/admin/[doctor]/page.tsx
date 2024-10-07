@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { StatCard } from "@/components/ui/StatCard";
 import {  doctorAppointmentCount, findDoctor } from "@/lib/action/appointment.action";
 import { DataTable } from "@/components/forms/table/DataTable";

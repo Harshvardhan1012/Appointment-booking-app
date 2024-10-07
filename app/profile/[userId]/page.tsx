@@ -1,20 +1,19 @@
-import { auth} from '@/app/auth';
 import { redirect } from 'next/navigation';
 import Dashboard from '@/components/forms/Dashboard';
-import { profilefind } from '@/app/api/auth/profilefind/route';
+import { profilefind } from './../../../lib/action/profile.action';
 
 
 
 export default async function Page({ params }: { params: { userId: string } }) {
   
   const { userId } = params;
-  console.log("userId", userId);
-  const session = await auth();
+  // console.log("userId", userId);
+  // const session = await auth();
 
-  if (Number(session?.user?.id) != Number(userId)) {
-    //page not found redirect
-    redirect('/login');
-  }
+  // if (Number(session?.user?.id) != Number(userId)) {
+  //   //page not found redirect
+  //   redirect('/login');
+  // }
   const profile=await profilefind(Number(userId));
   
 
@@ -28,7 +27,7 @@ export default async function Page({ params }: { params: { userId: string } }) {
             <h1 className="header text-white">Welcome</h1>
             <p className="text-dark-700">Let us know more about yourself</p>
           </section>
-          <Dashboard userId={Number(userId)} profile={profile}/>
+          <Dashboard userId={Number(userId)}/>
         </div>
       </div>
     )

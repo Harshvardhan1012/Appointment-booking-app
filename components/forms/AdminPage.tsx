@@ -5,10 +5,10 @@ import { DialogboxSchedule } from '../ui/DialogboxSchedule'
 import { Button } from '../ui/button'
 import { Dialog, DialogTrigger } from '../ui/dialog'
 import { DialogboxCancel } from '../ui/DialogboxCancel'
-import { Router } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Appointment } from '@prisma/client'
 
-export default function AdminPage({ appointment }: { appointment: any }) {
+export default function AdminPage({ appointment }: { appointment:Appointment[] }) {
     const [open1, setOpen1] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
 
@@ -25,7 +25,7 @@ export default function AdminPage({ appointment }: { appointment: any }) {
     return (
         <>
             <TableBody>
-                {appointment.map((e: any) => (
+                {appointment.map((e: Appointment) => (
                     <TableRow key={e.id}>
                         <TableCell className="font-medium">{e.userId}</TableCell>
                         <TableCell

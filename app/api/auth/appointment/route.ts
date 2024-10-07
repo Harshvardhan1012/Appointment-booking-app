@@ -8,6 +8,9 @@ export async function POST(req: Request) {
   try {
     const session = await auth();
     console.log("SESSION", session);
+    if(!body.physician || !body.Reason){
+      return NextResponse.json({message:'invalid inputs'});
+    }
    const appointment= await prisma.appointment.create({
       data: {
         physician: body.physician,
@@ -61,14 +64,3 @@ export async function POST(req: Request) {
 
 
 
-export async function appointmentfind() {
-
-  try {
-    const appointments = await prisma.appointment.findMany();
-   return appointments;
-    
-  } catch (error) {
-    console.error("Error fetching appointments:", error);
-    return false;
-  }
-} 

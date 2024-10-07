@@ -1,7 +1,7 @@
-import { scheduleFormSchema } from "@/lib/validation";
+"use server"
 import { AuthError } from "next-auth";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { signIn } from "../auth";
+import prisma from "@/lib/db";
 
 export async function handleCredentialsSignin({
   email,
@@ -12,22 +12,23 @@ export async function handleCredentialsSignin({
 }) {
   try {
     console.log("inside handleCredentialsSignin-----");
-
-    const signin = await fetch("/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+    const signin = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
     });
-    console.log(signin,"singinifdsfdfdsf") ;
-   
-    const data=await signin.json();
+
+    const userfind=await prisma.user.findUnique({
+      where:{
+        email:email,
+        password:password
+      }
+    });
     if (signin) {
       console.log("signin success");
       return {
         status: 200,
-        user:data?.user?.id,
+        user:userfind?.id,
         message: "success",
       };
     }

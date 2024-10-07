@@ -29,13 +29,24 @@ enum Status {
 model User {
   id               Int           @id @default(autoincrement())
   email            String        @unique
-  password         String        @default("123")
+  password         String
   phone            String        @unique
   profile          Profile?
   appointments     Appointment[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   isProfileCreated Boolean       @default(false) // New field to track profile creation
+}
+
+model Doctor {
+  id           Int          @id @default(autoincrement())
+  FullName     String
+  username     String       @unique
+  password     String
+  ProfilePhoto Json
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  appointments Appointment?
 }
 
 model Profile {
@@ -66,6 +77,7 @@ model Appointment {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   AppointmentStatus Status   @default(Pending)
-
-  @@unique([userId, physician]) // Enforces one appointment per physician per user
+  doctor            Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId          Int      @unique
+  @@unique([userId, doctorId]) // Enforces one appointment per physician per user
 }

@@ -1,15 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
 
-export async function appointmentfind() {
-  try {
-    const appointments = await prisma.appointment.findMany();
-    return appointments;
-  } catch (error) {
-    console.error("Error fetching appointments:", error);
-    return false;
-  }
-}
 
 export async function findDoctor(doctor: string) {
   try {
@@ -83,3 +74,37 @@ export const doctorAppointmentCount = async (doctor: string) => {
     return false;
   }
 };
+
+
+export async function appointmentfind() {
+
+  try {
+    const appointments = await prisma.appointment.findMany();
+   return appointments;
+    
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    return false;
+  }
+} 
+
+
+export const appointmentfindUser = async (appointmentId: number,userId:number) => {
+  try {
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id: Number(appointmentId),
+        userId:Number(userId)
+      },
+    });
+    console.log(appointment, "Appointment found successfully");
+    if (appointment) {
+      return appointment;
+    }
+    return false;
+  } catch (err) {
+    console.error("Error creating user:", err);
+    return false;
+  }
+};
+
