@@ -9,6 +9,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
+      name: "credentials",
       credentials: {
         email: {label:"email", type: "email" },
         password: {label:"password", type: "password" },
@@ -22,14 +23,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           if (!validate.success) {
             throw new CredentialsSignin({ status: 401 });
           }
-      
+          console.log(validate.data, "validate", validate.success, "success");
           const user = await prisma.user.findUnique({
             where: {
               email: validate.data.email,
               password: validate.data.password,
             },
           });
-      
+          console.log(user, "user");
           if (!user) {
             throw new CredentialsSignin({ status: 401 });
           }
