@@ -11,6 +11,7 @@ import email from './../../public/assets/icons/email.svg';
 import { useRouter } from 'next/navigation';
 import { handleCredentialsSignin } from '@/app/actions/formsubmit';
 import { SubmitButton } from '../SubmitButton';
+import Link from 'next/link';
 
 
 export default function LoginPage() {
@@ -63,7 +64,7 @@ export default function LoginPage() {
             className="flex-1 space-y-6 w-full"
           >
             <section className="mb-12 space-y-4 w-full">
-              <h1 className="header">Hi there 👋</h1>
+              <h1 className="header text-white">Hi there 👋</h1>
               <p className="text-dark-700">Get started with appointments.</p>
             </section>
 
@@ -86,7 +87,14 @@ export default function LoginPage() {
               iconSrc="/assets/icons/password.svg"
             // iconAlt="pass"
             />
-            <SubmitButton loading={loading} label="Login" />
+            <SubmitButton loading={loading} label="Login" buttonColor='green'/>
+            <span className='text-white flex items-center justify-center'>
+              Don&apos;t have an account?&nbsp;
+              <Link href="/" className='text-blue-500 hover:text-blue-300 underline ml-1'>
+                Register
+              </Link>
+            </span>
+
             {errmessage && <p className='text-red-500'>{errmessage}</p>}
 
           </form>
