@@ -11,13 +11,14 @@ import email from './../../public/assets/icons/email.svg';
 import { useRouter } from 'next/navigation';
 import { handleCredentialsSignin } from '@/app/actions/formsubmit';
 import { SubmitButton } from '../SubmitButton';
+import Link from 'next/link';
 
 
 export default function LoginPage() {
   const router = useRouter();
-  useEffect(() => {
-    router.refresh();
-  }, [router]);
+  // useEffect(() => {
+  //   router.refresh();
+  // }, [router]);
   const [errmessage, seterrmessage] = useState("");
   const [loading, setloading] = useState(false);
 
@@ -33,10 +34,14 @@ export default function LoginPage() {
     try {
       setloading(true)
       const result = await handleCredentialsSignin(values);
-      
+      console.log(result, 'result');
       if (result?.message === "success") {
-        console.log(result,"00000000000-1-1-");
-        const userId=result.user;
+        const userId = result.user;
+        console.log(result, '2403434324');
+        if (result.isAdmin === "Admin") {
+          router.push(`/admin/${userId}`)
+          return;
+        }
         router.push('/profile/' + userId);
         return;
       };
@@ -48,11 +53,9 @@ export default function LoginPage() {
 
     } catch (error) {
       setloading(false);
-      console.log("An unexpected error occurred. Please try again.", error);
     }
   };
 
-  console.log("login page loadded -=-=-=++");
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
@@ -63,7 +66,7 @@ export default function LoginPage() {
             className="flex-1 space-y-6 w-full"
           >
             <section className="mb-12 space-y-4 w-full">
-              <h1 className="header">Hi there 👋</h1>
+              <h1 className="header text-white">Hi there 👋</h1>
               <p className="text-dark-700">Get started with appointments.</p>
             </section>
 
@@ -86,8 +89,23 @@ export default function LoginPage() {
               iconSrc="/assets/icons/password.svg"
             // iconAlt="pass"
             />
-            <SubmitButton loading={loading} label="Login" />
+            <SubmitButton loading={loading} label="Login" buttonColor='green' />
             {errmessage && <p className='text-red-500'>{errmessage}</p>}
+            <span className="text-white flex flex-col items-center justify-center mt-4">
+              <p>
+                Don&apos;t have an account?
+              </p>
+              <div className="flex space-x-4">
+                <Link href="/admin/register" className="hover:underline">
+                  Register as Admin
+                </Link>
+                <Link href="/" className="hover:underline">
+                  Register as Patient
+                </Link>
+              </div>
+            </span>
+
+
 
           </form>
         </Form>

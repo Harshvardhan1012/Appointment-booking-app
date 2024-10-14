@@ -34,7 +34,6 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
                 Reason: values.Reason,
             }
             
-            console.log(user);
             const res = await fetch("/api/auth/appointment", {
                 method: "POST",
                 headers: {
@@ -44,8 +43,6 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
                 cache: "no-cache",
             });
             const data= await res.json();
-            console.log(res);
-            console.log(data);
             
             if(res?.ok){
                 console.log("Appointment success");
@@ -83,7 +80,7 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
                             control={form.control}
                             name="physician"
                             label="Primary care physician"
-                            placeholder="Dr.John Doe"
+                            placeholder="Select Physician"
                         />
 
                         <CustomFormField

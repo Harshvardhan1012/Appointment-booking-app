@@ -20,7 +20,7 @@ import { Control, ControllerRenderProps, FieldValues, Path } from "react-hook-fo
 import PhoneInput from 'react-phone-number-input'
 import { RadioGroup } from "./radio-group";
 import RadioButton from "./RadioButton";
-import { Calendar as CalendarIcon, EyeIcon, EyeOffIcon } from "lucide-react"
+import { Calendar as CalendarIcon, EyeIcon, EyeOffIcon, LoaderCircle } from "lucide-react"
 import { Calendar } from "./calendar"
 import {
   Popover,
@@ -28,11 +28,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "./button";
-import { format } from "date-fns"
+import { format, set } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Doctors } from './../../app/constants/index'
 import { FileUploader } from "./FileUploader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { userAdmin } from "@/lib/action/admin.action";
 // import loading from "@/app/loading";
 
 export enum FormFieldType {
@@ -64,6 +65,17 @@ interface CustomProps<T extends FieldValues> {
 
 const RenderInput = <T extends FieldValues>({ field, props }: { field: ControllerRenderProps<T>; props: CustomProps<T> }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [admin, setAdmin] = useState<{ id: number, FullName: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchAdminUser = async () => {
+      setLoading(true);
+      const adminUser = await userAdmin();
+      if (adminUser && adminUser != null) setAdmin(adminUser.map((prev) => ({ FullName: prev.FullName ?? "", id: prev.id })));
+      setLoading(false);
+    };
+    fetchAdminUser();
+  }, []);
   const disabled = field.value === '' || field.value === undefined || field.disabled
 
   switch (props.fieldType) {
@@ -150,17 +162,16 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
               <SelectValue placeholder={props.placeholder} />
             </SelectTrigger>
             <SelectContent className="text-white shad-select-content">
-              {
-                Doctors.map((doctor) => (
-
-                  <SelectItem value={doctor.name} key={doctor.name} >
-                    <div className="flex justify-center items-center gap-3">
-                      <Image src={doctor.image} alt={doctor.name} height={34} width={34} />
-                      <p>{doctor.name}</p>
-                    </div>
+              {admin.length === 0 ? (
+                // Show a loading bar or spinner when admin is empty
+                <LoaderCircle />
+              ) : (
+                admin.map((doctor) => (
+                  <SelectItem value={doctor.id.toString()} key={doctor.id}>
+                    {doctor.FullName}
                   </SelectItem>
                 ))
-              }
+              )}
             </SelectContent>
           </Select>
 
@@ -189,26 +200,26 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
           <FormControl>
             <Input
               placeholder={props.placeholder}
-              type={showPassword?FormFieldType.PASSWORD:FormFieldType.INPUT}
+              type={showPassword ? FormFieldType.PASSWORD : FormFieldType.INPUT}
               {...field}
               className="shad-input border-0 text-white bg-black"
             />
           </FormControl>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-full hover:bg-transparent bg-inherit text-white pt-3 flex justify-center items-center"
-              onClick={() => setShowPassword((prev) => !prev)}
-              disabled={disabled}
-            >
-              {showPassword && !disabled ? (
-                <EyeIcon className="h-5 w-5" aria-hidden="true" />
-              ) : (
-                <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
-              )}
-              <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
-            </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-full hover:bg-transparent bg-inherit text-white pt-3 flex justify-center items-center"
+            onClick={() => setShowPassword((prev) => !prev)}
+            disabled={disabled}
+          >
+            {showPassword && !disabled ? (
+              <EyeIcon className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <EyeOffIcon className="h-5 w-5" aria-hidden="true" />
+            )}
+            <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+          </Button>
         </div>
       );
   }

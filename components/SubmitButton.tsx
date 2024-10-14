@@ -10,19 +10,19 @@ interface ButtonProps {
   buttonColor?: string
 }
 
-export const SubmitButton = ({ loading, label, className,onClick,buttonColor }: ButtonProps) => {
+export const SubmitButton = ({ loading, label, className, onClick, buttonColor }: ButtonProps) => {
+  
   return (
     <>
-      <Button type='submit' disabled={loading}  className={cn(
-    `shad-primary-btn w-full ${
-      buttonColor === 'green'
-        ? 'bg-green-500'
-        : buttonColor === 'red'
-        ? 'bg-red-500'
-        : 'bg-dark-500'
-    }`,
-    className
-  )} onClick={onClick}>
+      <Button type='submit' disabled={loading} className={cn(
+        `shad-primary-btn w-full ${buttonColor === 'green'
+          ? 'bg-green-500'
+          : buttonColor === 'red'
+            ? 'bg-red-500'
+            : 'bg-dark-500'
+        }`,
+        className
+      )} onClick={onClick}>
 
         {loading &&
           <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

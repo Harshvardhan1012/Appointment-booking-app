@@ -10,10 +10,10 @@ import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from './../ui/CustomForm'
 import { useRouter } from 'next/navigation';
 import { SubmitButton } from '../SubmitButton';
+import Link from 'next/link';
 
 
 export default function RegisterPage() {
-  console.log('second');
 
   const [err, seterr] = useState(false);
   const [success, setsuccess] = useState(false);
@@ -41,9 +41,7 @@ export default function RegisterPage() {
         password: values.password,
         phone: values.phone,
       };
-      console.log(user);
 
-      console.log("signing in");
 
       const signin = await fetch("/api/auth/signup", {
         method: "POST",
@@ -55,16 +53,14 @@ export default function RegisterPage() {
 
       const data = await signin.json();
 
-      console.log(data);
       if (signin?.ok) {
-          console.log("signin success",data);
-          setsuccess(true);
-          router.push(`/login`);
-          return
+        console.log("signin success", data);
+        setsuccess(true);
+        router.push(`/login`);
+        return
       }
       else {
         seterr(true);
-        console.log(signin);
         seterrmessage(data.message);
         setTimeout(() => {
           seterr(false);
@@ -90,8 +86,8 @@ export default function RegisterPage() {
             className="flex-1 space-y-6 w-full"
           >
             <section className="mb-12 space-y-4 w-full">
-              <h1 className="header">Hi there 👋</h1>
-              <p className="text-dark-700">Get started with appointments.</p>
+              <h1 className="header text-white">Hi there 👋</h1>
+              <p className="text-dark-700">Register as a Patient</p>
             </section>
 
             <CustomFormField
@@ -121,9 +117,16 @@ export default function RegisterPage() {
               label="Phone number"
               placeholder="(555) 123-4567"
             />
-            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
+            <SubmitButton label='Get Started' loading={loading} buttonColor='green' />
+            <span className='text-white flex items-center justify-center'>
+              Already have an account?&nbsp;
+              <Link href="/login" className='text-blue-500 hover:text-blue-300 underline ml-1'>
+                Login
+              </Link>
+            </span>
             {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
-            <SubmitButton label='Get Started' loading={loading} buttonColor='green'/>
+            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
+
           </form>
         </Form>
       </div>

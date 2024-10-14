@@ -1,6 +1,4 @@
-import { redirect } from 'next/navigation';
 import Dashboard from '@/components/forms/Dashboard';
-import { profilefind } from './../../../lib/action/profile.action';
 
 
 
@@ -14,14 +12,14 @@ export default async function Page({ params }: { params: { userId: string } }) {
   //   //page not found redirect
   //   redirect('/login');
   // }
-  const profile=await profilefind(Number(userId));
+  // const profile=await profilefind(Number(userId));
   
 
-  if(profile){
-    redirect('/profile/'+userId+'/appointment-form');
-  }
+  // if(profile){
+  //   redirect('/profile/'+userId+'/appointment-form');
+  // }
     return (
-      <div className="flex justify-center items-center min-h-screen mb-12 mt-14">
+      <div className="flex justify-center items-center min-h-screen mb-12 mt-20">
         <div className="w-[900px] justify-center items-center px-9 sm:px-6 md:px-8 lg:px-0">
           <section className="mb-12 space-y-4 w-full">
             <h1 className="header text-white">Welcome</h1>

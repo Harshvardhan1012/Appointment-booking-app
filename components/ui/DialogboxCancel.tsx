@@ -15,7 +15,7 @@ import { cancellationformschema} from "@/lib/validation"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitButton } from "../SubmitButton";
-import clearCachesByServerAction from "@/app/superadmin/revalidate";
+import clearCachesByServerAction from "./../../lib/action/clearcachesbyaction";
 
 
 
@@ -48,7 +48,7 @@ export function DialogboxCancel({ title, description, id ,setOpen }: { title: st
                         'Content-Type': 'application/json'
                     }
                 })
-                await clearCachesByServerAction('/auperadmin');
+                await clearCachesByServerAction(`/admin/${id}`);
                 const data=await cancelled.json();
                 console.log(data,'data');
                 console.log("appointment canclled");

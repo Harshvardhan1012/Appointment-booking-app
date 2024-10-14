@@ -15,7 +15,7 @@ import { scheduleFormSchema } from "@/lib/validation"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitButton } from "../SubmitButton";
-import clearCachesByServerAction from "@/app/superadmin/revalidate";
+import clearCachesByServerAction from "./../../lib/action/clearcachesbyaction";
 
 
 
@@ -24,7 +24,7 @@ import clearCachesByServerAction from "@/app/superadmin/revalidate";
 export function DialogboxSchedule({ title, description, id, physician, setOpen }: { title: string, description: string, id: number, physician: string, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const [loading, setloading] = React.useState(false);
- 
+    console.log(id, "id");
    const form = useForm<z.infer<typeof scheduleFormSchema>>({
         resolver: zodResolver(scheduleFormSchema),
         defaultValues: {
@@ -49,7 +49,7 @@ export function DialogboxSchedule({ title, description, id, physician, setOpen }
                     'Content-Type': 'application/json'
                 }
             })
-            await clearCachesByServerAction('/superadmin');
+            await clearCachesByServerAction(`/admin/${id}`);
 
             console.log("appointment approved");
             setloading(false);

@@ -2,11 +2,27 @@
 import prisma from "@/lib/db";
 
 
-export async function findDoctor(doctor: string) {
+export const doctorName=async(id:number)=>{
+  try{
+  const user = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return user?.FullName
+  }
+ catch(error){
+  return false;
+}
+}
+
+export async function findDoctor(id:number) {
   try {
+   
     const appointments = await prisma.appointment.findMany({
       where: {
-        physician: doctor,
+        physicianId:id,
       },
     });
     return appointments;
@@ -44,23 +60,25 @@ export const appointmentcount = async () => {
   }
 };
 
-export const doctorAppointmentCount = async (doctor: string) => {
+export const doctorAppointmentCount = async (id:number) => {
   try {
+
+  
     const PendingCount = await prisma.appointment.count({
       where: {
-        physician: doctor,
+        physicianId: id,
         AppointmentStatus: "Pending",
       },
     });
     const ApprovedCount = await prisma.appointment.count({
       where: {
-        physician: doctor,
+        physicianId: id,
         AppointmentStatus: "Approved",
       },
     });
     const CancelledCount = await prisma.appointment.count({
       where: {
-        physician: doctor,
+        physicianId: id,
         AppointmentStatus: "Rejected",
       },
     });
@@ -89,17 +107,24 @@ export async function appointmentfind() {
 } 
 
 
-export const appointmentfindUser = async (appointmentId: number,userId:number) => {
+export const appointmentfindUser = async (appointmentId: number) => {
   try {
     const appointment = await prisma.appointment.findUnique({
       where: {
         id: Number(appointmentId),
-        userId:Number(userId)
       },
     });
-    console.log(appointment, "Appointment found successfully");
+    const user = await prisma.user.findUnique({
+      where: {
+        id: appointment?.physicianId,
+      },
+    });
+    
     if (appointment) {
-      return appointment;
+      return {
+        user: user?.FullName,
+        appointment,
+      };
     }
     return false;
   } catch (err) {

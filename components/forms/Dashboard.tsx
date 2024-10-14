@@ -37,15 +37,10 @@ export default function Dashboard({ userId }: { userId: number }) {
       InsuranceId: "",
       InsuranceProvider: "",
       Allergies: "",
-      identificationDocument: [],
       CurrentMedications: "",
     },
   });
 
-  // console.log("session", session)
-  // if(session){
-  //   console.log("session------")
-  // }
 
 
 
@@ -63,7 +58,6 @@ export default function Dashboard({ userId }: { userId: number }) {
       InsuranceId: values.InsuranceId,
       InsuranceProvider: values.InsuranceProvider,
       Allergies: values.Allergies,
-      identificationDocument: values.identificationDocument,
       CurrentMedications: values.CurrentMedications
     };
 
@@ -76,26 +70,12 @@ export default function Dashboard({ userId }: { userId: number }) {
       body: JSON.stringify(user),
     });
 
-    console.log(res);
     if (res?.ok) {
-
-      console.log("Profile created successfully");
-
-      // router.push('/appointment-form');
       router.push("/profile/" + userId + "/appointment-form");
-      //   console.log("Profile created successfully");
-      //   router.push('/appointment-form');
       return;
     }
     const data = await res.json();
-    console.log(data);
-
     setErrMessage(data?.error ?? "unexpected error");
-    console.log(data.message);
-    console.log(user);
-    setIsLoading(false);
-
-
 
     setIsLoading(false);
   };
@@ -207,14 +187,14 @@ export default function Dashboard({ userId }: { userId: number }) {
 
 
         </div>
-        <h1 className='text-white text-2xl mt-4'>Verification Documents</h1>
+        {/* <h1 className='text-white text-2xl mt-4'>Verification Documents</h1>
         <CustomFormField
           fieldType={FormFieldType.SKELETON}
           control={form.control}
           name="identificationDocument"
           label="Scanned Copy of Identification Document"
 
-        />
+        /> */}
         <SubmitButton loading={loading} label='Submit and Continue' />
         {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
       </form>

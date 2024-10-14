@@ -36,21 +36,8 @@ export async function POST(req: NextRequest) {
         CurrentMedications: body.CurrentMedications,
       },
     });
-    await prisma.user.update({
-      where:{
-        id:Number(session?.user?.id)
-      },
-      data:{
-       isProfileCreated:true
-      }
-    });
 
-    // if(user){
-    //   console.log(req.url,"utlll====");
-    //  return NextResponse.redirect(new URL('/appointment-form', req.url));  // Redirect authenticated users to the dashboard
-      
-    // }
-
+    
     return NextResponse.json(user, { status: 201 });
   } catch (error) {
     console.error("Error creating user:", error);

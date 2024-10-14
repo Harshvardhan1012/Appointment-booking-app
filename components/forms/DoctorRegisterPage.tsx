@@ -3,19 +3,20 @@ import React, { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { doctorRegisterSchema} from './../../lib/validation'
+import { doctorRegisterSchema } from './../../lib/validation'
 import { Form } from "@/components/ui/form";
 
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from './../ui/CustomForm'
 import { useRouter } from 'next/navigation';
 import { SubmitButton } from '../SubmitButton';
+import { adminRegister } from '@/lib/action/admin.action';
+import Link from 'next/link';
 
 
 export default function DoctorRegisterPage() {
     // console.log('second');
 
-    const [err, seterr] = useState(false);
     const [success, setsuccess] = useState(false);
     const [errmessage, seterrmessage] = useState("");
     const [loading, setloading] = useState(false);
@@ -23,10 +24,9 @@ export default function DoctorRegisterPage() {
     const form = useForm<z.infer<typeof doctorRegisterSchema>>({
         resolver: zodResolver(doctorRegisterSchema),
         defaultValues: {
-            username: "",
+            email: "",
             password: "",
             FullName: "",
-            ProfilePhoto: [],
         },
     });
 
@@ -38,38 +38,23 @@ export default function DoctorRegisterPage() {
 
         try {
             const user = {
-                username: values.username,
+                email: values.email,
                 password: values.password,
                 FullName: values.FullName,
-                ProfilePhoto: values.ProfilePhoto,
+                // ProfilePhoto: values.ProfilePhoto,
             };
-            console.log(user);
+            const register = await adminRegister(user);
 
-            console.log("signing in");
 
-            const signin = await fetch("/api/auth/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
-
-            const data = await signin.json();
-
-            console.log(data);
-            if (signin?.ok) {
-                console.log("signin success", data);
+            if (register.status === 200) {
+                console.log("signin success", register);
                 setsuccess(true);
                 router.push(`/login`);
                 return
             }
             else {
-                seterr(true);
-                console.log(signin);
-                seterrmessage(data.message);
+                seterrmessage(register.message);
                 setTimeout(() => {
-                    seterr(false);
                     seterrmessage("");
                 }, 3000);
             }
@@ -93,7 +78,7 @@ export default function DoctorRegisterPage() {
                     >
                         <section className="mb-12 space-y-4 w-full">
                             <h1 className="header">Hi there 👋</h1>
-                            <p className="text-dark-700">Get started with appointments.</p>
+                            <p className="text-dark-700">Register as a Doctor.</p>
                         </section>
 
                         <CustomFormField
@@ -106,11 +91,12 @@ export default function DoctorRegisterPage() {
                             iconAlt="user"
                         />
                         <CustomFormField
-                            fieldType={FormFieldType.PHONE_INPUT}
+                            fieldType={FormFieldType.INPUT}
                             control={form.control}
-                            name="username"
-                            label="Enter Username"
-                            placeholder="harsh@123"
+                            name="email"
+                            label="Enter Email Address"
+                            placeholder="harsh@gmail.com"
+                            iconSrc='/assets/icons/email.svg'
                         />
 
                         <CustomFormField
@@ -122,17 +108,23 @@ export default function DoctorRegisterPage() {
                             iconSrc='/assets/icons/password.svg'
                             iconAlt="pass"
                         />
-                        <CustomFormField
+                        {/* <CustomFormField
                             fieldType={FormFieldType.SKELETON}
                             control={form.control}
                             name="ProfilePhoto"
                             label="Upload Profile Photo"
 
-                        />
+                        /> */}
 
                         {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
-                        {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
+                        {errmessage && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
                         <SubmitButton label='Get Started' loading={loading} buttonColor='green' />
+                        <span className='text-white flex items-center justify-center'>
+                            Already have an account?&nbsp;
+                            <Link href="/login" className='text-blue-500 hover:text-blue-300 underline ml-1'>
+                                Login
+                            </Link>
+                        </span>
                     </form>
                 </Form>
             </div>

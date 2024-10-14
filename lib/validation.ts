@@ -22,9 +22,8 @@ export const loginformschema = z.object({
 });
 export const doctorRegisterSchema=z.object({
   FullName:z.string().nonempty("Name is required"),
-  username:z.string().nonempty("username is required"),
+  email:z.string().email("Invalid email address"),
   password:z.string().nonempty("password is required"),
-  ProfilePhoto: z.custom<File[]>().optional(),
 })
 
 //register form schema
@@ -39,7 +38,7 @@ export const registerformschema = z.object({
   dob: z.coerce.date(),
   Address: z.string(),
   Occupation: z.string(),
-  identificationDocument: z.custom<File[]>().optional(),
+  // identificationDocument: z.custom<File[]>().optional(),
   InsuranceId: z.string(),
   InsuranceProvider: z.string(),
   Allergies: z.string().optional(),
