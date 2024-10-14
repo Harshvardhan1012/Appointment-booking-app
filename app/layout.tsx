@@ -9,7 +9,8 @@ import Navigation from "@/components/forms/Navigation";
 const fontSans=Plus_Jakarta_Sans({
   subsets:["latin"],
   weight:["300","400","500","600","700"],
-  variable:'--font-sans'
+  variable:'--font-sans',
+  display:'swap'
 })
 
 export const metadata: Metadata = {

@@ -16,17 +16,13 @@ import { Button } from '../ui/button'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false)
-  const noNavbarPaths = ['/login', '/'];
+  const noNavbarPaths = ['/login', '/','/admin/register'];
   const router = useRouter()
   const pathnames = usePathname()
 
   const handlelogoutfunction = async () => {
-    try {
-      
-      console.log(new Date().getTime(), '++++');
+    try {      
       const res = await handlelogout();
-      console.log(res);
-      console.log(new Date().getTime(), '---');
       if (res) {
         router.push("/login");
         setIsOpen(false)
@@ -50,7 +46,7 @@ export default function Navigation() {
       <div>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" onClick={()=>setIsOpen(true)}>Show Dialog</Button>
+            <Button variant="outline" onClick={()=>setIsOpen(true)} className='bg-red-900'>Logout</Button>
           </AlertDialogTrigger>
           <AlertDialogContent   className='bg-dark-400 text-white w-[90%] sm:w-[70%] md:w-[50%] max-w-lg rounded-lg sm:m-5'>
             <AlertDialogHeader>

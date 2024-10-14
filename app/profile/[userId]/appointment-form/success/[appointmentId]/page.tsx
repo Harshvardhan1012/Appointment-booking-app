@@ -11,12 +11,11 @@ export default async function Page({ params }: { params: { userId: number, appoi
 
   const { userId, appointmentId } = params;
 
-  const appointment = await appointmentfindUser(appointmentId, userId);
-  console.log(appointment);
+  const appointment = await appointmentfindUser(appointmentId);
   if (!appointment) {
     redirect('/profile/' + userId + '/appointment-form');
   }
-  const date = new Date(appointment.Date);
+  const date = new Date(appointment.appointment.Date);
 
   // Get day, month, and year
   const day = date.getUTCDate();
@@ -28,7 +27,7 @@ export default async function Page({ params }: { params: { userId: number, appoi
       <div className="w-[600px] items-center text-white flex justify-center flex-col gap-3">
 
         {
-          appointment.AppointmentStatus === 'Rejected' && (
+          appointment.appointment.AppointmentStatus === 'Rejected' && (
             <>
               <Image src={cancelled} width={70} height={70} alt="rejected" />
 
@@ -38,7 +37,7 @@ export default async function Page({ params }: { params: { userId: number, appoi
           )
         }
         {
-          appointment.AppointmentStatus === "Approved" && (
+          appointment.appointment.AppointmentStatus === "Approved" && (
             <>
               <Image src={success} width={100} height={100} alt="success" />
 
@@ -48,7 +47,7 @@ export default async function Page({ params }: { params: { userId: number, appoi
           )
         }
         {
-          appointment.AppointmentStatus === "Pending" && (
+          appointment.appointment.AppointmentStatus === "Pending" && (
             <>
               <Image src={pending} width={50} height={50} alt="success" />
 
@@ -58,7 +57,7 @@ export default async function Page({ params }: { params: { userId: number, appoi
           )
         }
         <div className="text-white-700 text-base mb-2 mt-6">
-          <span className="font-medium">Doctor:</span> Dr. {appointment.physician}
+          <span className="font-medium">Doctor:</span> Dr. {appointment.user}
         </div>
 
         <div className="text-white-700 text-base mb-2">

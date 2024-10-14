@@ -4,7 +4,6 @@ import prisma from "../db";
 
 export const profilefind = async (userId: number) => {
   try {
-    console.log("inside profilefind");
     const res = await prisma.profile.findUnique({
       where: {
         userId,

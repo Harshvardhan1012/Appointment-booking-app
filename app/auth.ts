@@ -1,9 +1,34 @@
 // "use server"
-import NextAuth, { CredentialsSignin, User } from "next-auth";
+import NextAuth, { CredentialsSignin, JWT, User as NextAuthUser } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "../lib/db";
 import { loginformschema } from "@/lib/validation";
+import { Role } from "@prisma/client";
+
+interface User extends NextAuthUser {
+  role: string;
+}
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      role: Role;
+   
+    };
+  }
+}
+
+declare module "next-auth" {
+  interface JWT {
+    id: string;
+    email: string;
+    role: Role;
+   
+  }
+}
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -16,14 +41,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
        async authorize(credentials) {
         try {
-          console.log(credentials, "credentials");
           if (!credentials || !credentials.email || !credentials.password) return null;
       
           const validate = loginformschema.safeParse(credentials);
           if (!validate.success) {
             throw new CredentialsSignin({ status: 401 });
           }
-          console.log(validate.data, "validate", validate.success, "success");
           const user = await prisma.user.findUnique({
             where: {
               email: validate.data.email,
@@ -35,16 +58,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             throw new CredentialsSignin({ status: 401 });
           }
       
-          // Map the Prisma user to the NextAuth User type (adjust this based on what NextAuth expects)
          
           const User: User = {
             id: user.id.toString(),
             email: user.email,
+            role: user.role,
           };
-          return User;  // Return a type compatible with NextAuth User
+          return User;  
         } catch (err) {
-          console.log(err, "error");
-          return null;  // Ensure null is returned on error, not undefined
+          console.log(err);
+          return null;  
         }
       }
     }),
@@ -60,23 +83,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        const typedUser = user as JWT; // Type cast user to User
         return {
           ...token,
-          id: user.id,
-          email: user.email,
+          id: typedUser.id,
+          email: typedUser.email,
+          role: typedUser.role,
         };
       }
       return token;
     },
     async session({ session, token }) {
-      return {
-        ...session,
-        user: {
-          id: token.sub,
-          email: token.email,
-        },
-      };
-    },
+     if (token) {
+       session.user.email=token.email as string;
+        session.user.id = token.id as string;
+        session.user.role=token.role as Role;
+      }
+      return session;
+    }
   },
   trustHost: true
 });

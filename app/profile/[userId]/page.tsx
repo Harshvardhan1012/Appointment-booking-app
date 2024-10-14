@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { userId: string } }) {
   //   redirect('/profile/'+userId+'/appointment-form');
   // }
     return (
-      <div className="flex justify-center items-center min-h-screen mb-12 mt-14">
+      <div className="flex justify-center items-center min-h-screen mb-12 mt-20">
         <div className="w-[900px] justify-center items-center px-9 sm:px-6 md:px-8 lg:px-0">
           <section className="mb-12 space-y-4 w-full">
             <h1 className="header text-white">Welcome</h1>

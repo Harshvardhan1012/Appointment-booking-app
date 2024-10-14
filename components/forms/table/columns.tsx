@@ -17,7 +17,7 @@ import Image from "next/image"
 // You can use a Zod schema here if you want.
 type Appointmenttable = {
     id: number;
-    physician: string;
+    adminName: string;
     Reason: string;
     Date: Date;
     userId: number;
@@ -64,17 +64,17 @@ export const columns: ColumnDef<Appointmenttable>[] = [
                     <span
                         className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full w-[105px] justify-center
                                 ${status === 'Approved' ? 'bg-green-300 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                : status === 'Rejected' ? 'bg-red-300 text-red-800 dark:bg-red- dark:text-red-300'
+                                : status === 'Rejected' ? 'bg-red-300 text-red-800 dark:bg-red-600 dark:text-red-300'
                                     : 'bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300'}`}
                     >
                         {status === 'Approved' && (
-                            <Image src={check} alt="check" className="w-4 h-4 me-1" />
+                            <Image src={check} alt="Approved" className="w-4 h-4 me-1" />
                         )}
                         {status === 'Pending' && (
-                            <Image src={pending} alt="pending" className="w-4 h-4 me-1" />
+                            <Image src={pending} alt="Pending" className="w-4 h-4 me-1" />
                         )}
                         {status === 'Rejected' && (
-                            <Image src={cancelled} alt="cancelled" className="w-4 h-4 me-1" />
+                            <Image src={cancelled} alt="Cancelled" className="w-4 h-4 me-1" />
                         )}
                         {status === 'Approved' ? 'Scheduled' : status === 'Rejected' ? 'Cancelled' : 'Pending'}
                     </span>
@@ -102,20 +102,38 @@ export const columns: ColumnDef<Appointmenttable>[] = [
             )
         }
     },
+    // {
+    //     accessorKey: "physician",
+    //     header: () => {
+    //         return (
+    //             <span className="flex justify-center items-center">
+    //                 Physician
+    //             </span>
+    //         )
+    //     },
+    //     cell: ({ row }) => {
+    //         const physician = row.original.physician;
+    //         return (
+    //             <span className="flex justify-center items-center">
+    //                 {physician}
+    //             </span>
+    //         )
+    //     }
+    // },
     {
-        accessorKey: "physician",
+        accessorKey: "Reason",
         header: () => {
             return (
                 <span className="flex justify-center items-center">
-                    Physician
+                    Reason
                 </span>
             )
         },
         cell: ({ row }) => {
-            const physician = row.original.physician;
+            const reason = row.original.Reason;
             return (
                 <span className="flex justify-center items-center">
-                    {physician}
+                    {reason}
                 </span>
             )
         }
@@ -143,7 +161,7 @@ export const columns: ColumnDef<Appointmenttable>[] = [
                                 <DialogTrigger asChild>
                                     <Button className="text-green-500" onClick={() => setOpen1(true)}>Schedule</Button>
                                 </DialogTrigger>
-                                <DialogboxSchedule key={e.id} title='Schedule' description='Select date and add remarks for scheduling an appointment' id={e.id} physician={e.physician} setOpen={setOpen1} />
+                                <DialogboxSchedule key={e.id} title='Schedule' description='Select date and add remarks for scheduling an appointment' id={e.id} physician={e.adminName} setOpen={setOpen1} />
                             </Dialog>)
                     :e.AppointmentStatus === 'Approved'?
                    ( 
@@ -159,7 +177,7 @@ export const columns: ColumnDef<Appointmenttable>[] = [
                             <DialogTrigger asChild>
                                 <Button className="text-green-500" onClick={() => setOpen1(true)}>Schedule</Button>
                             </DialogTrigger>
-                            <DialogboxSchedule key={e.id} title='enter' description='Select date and add remarks for scheduling an appointment' id={e.id} physician={e.physician} setOpen={setOpen1} />
+                            <DialogboxSchedule key={e.id} title='enter' description='Select date and add remarks for scheduling an appointment' id={e.id} physician={e.adminName} setOpen={setOpen1} />
                         </Dialog>
                          <Dialog open={open2} onOpenChange={setOpen2}>
                          <DialogTrigger asChild>

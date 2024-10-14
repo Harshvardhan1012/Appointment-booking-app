@@ -11,7 +11,6 @@ export async function handleCredentialsSignin({
   password: string;
 }) {
   try {
-    console.log("inside handleCredentialsSignin-----");
     const signin = await signIn("credentials", {
       email,
       password,
@@ -25,10 +24,10 @@ export async function handleCredentialsSignin({
       }
     });
     if (signin) {
-      console.log("signin success");
       return {
         status: 200,
         user:userfind?.id,
+        isAdmin:userfind?.role,
         message: "success",
       };
     }
@@ -52,15 +51,3 @@ export async function handleCredentialsSignin({
     };
   }
 }
-
-
-// export const schedular = async(appointment:number) => {   
-//   const schedule=await appointmentupdate(appointment,'Approved');
-//   console.log(schedule);
-// }
-
-// export const cancelappointment = async(appointment:number) => {
-//   const cancel=await appointmentupdate(appointment,"Rejected");
-//   console.log(cancel);
-// }
-

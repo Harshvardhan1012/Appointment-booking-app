@@ -14,7 +14,6 @@ import Link from 'next/link';
 
 
 export default function RegisterPage() {
-  console.log('second');
 
   const [err, seterr] = useState(false);
   const [success, setsuccess] = useState(false);
@@ -42,9 +41,7 @@ export default function RegisterPage() {
         password: values.password,
         phone: values.phone,
       };
-      console.log(user);
 
-      console.log("signing in");
 
       const signin = await fetch("/api/auth/signup", {
         method: "POST",
@@ -56,7 +53,6 @@ export default function RegisterPage() {
 
       const data = await signin.json();
 
-      console.log(data);
       if (signin?.ok) {
         console.log("signin success", data);
         setsuccess(true);
@@ -65,7 +61,6 @@ export default function RegisterPage() {
       }
       else {
         seterr(true);
-        console.log(signin);
         seterrmessage(data.message);
         setTimeout(() => {
           seterr(false);
@@ -92,7 +87,7 @@ export default function RegisterPage() {
           >
             <section className="mb-12 space-y-4 w-full">
               <h1 className="header text-white">Hi there 👋</h1>
-              <p className="text-dark-700">Get started with appointments.</p>
+              <p className="text-dark-700">Register as a Patient</p>
             </section>
 
             <CustomFormField

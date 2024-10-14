@@ -16,9 +16,9 @@ import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
-  useEffect(() => {
-    router.refresh();
-  }, [router]);
+  // useEffect(() => {
+  //   router.refresh();
+  // }, [router]);
   const [errmessage, seterrmessage] = useState("");
   const [loading, setloading] = useState(false);
 
@@ -34,10 +34,14 @@ export default function LoginPage() {
     try {
       setloading(true)
       const result = await handleCredentialsSignin(values);
-      
+      console.log(result, 'result');
       if (result?.message === "success") {
-        console.log(result,"00000000000-1-1-");
-        const userId=result.user;
+        const userId = result.user;
+        console.log(result, '2403434324');
+        if (result.isAdmin === "Admin") {
+          router.push(`/admin/${userId}`)
+          return;
+        }
         router.push('/profile/' + userId);
         return;
       };
@@ -49,11 +53,9 @@ export default function LoginPage() {
 
     } catch (error) {
       setloading(false);
-      console.log("An unexpected error occurred. Please try again.", error);
     }
   };
 
-  console.log("login page loadded -=-=-=++");
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
@@ -87,15 +89,23 @@ export default function LoginPage() {
               iconSrc="/assets/icons/password.svg"
             // iconAlt="pass"
             />
-            <SubmitButton loading={loading} label="Login" buttonColor='green'/>
-            <span className='text-white flex items-center justify-center'>
-              Don&apos;t have an account?&nbsp;
-              <Link href="/" className='text-blue-500 hover:text-blue-300 underline ml-1'>
-                Register
-              </Link>
+            <SubmitButton loading={loading} label="Login" buttonColor='green' />
+            {errmessage && <p className='text-red-500'>{errmessage}</p>}
+            <span className="text-white flex flex-col items-center justify-center mt-4">
+              <p>
+                Don&apos;t have an account?
+              </p>
+              <div className="flex space-x-4">
+                <Link href="/admin/register" className="hover:underline">
+                  Register as Admin
+                </Link>
+                <Link href="/" className="hover:underline">
+                  Register as Patient
+                </Link>
+              </div>
             </span>
 
-            {errmessage && <p className='text-red-500'>{errmessage}</p>}
+
 
           </form>
         </Form>

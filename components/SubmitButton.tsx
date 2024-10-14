@@ -11,7 +11,7 @@ interface ButtonProps {
 }
 
 export const SubmitButton = ({ loading, label, className, onClick, buttonColor }: ButtonProps) => {
-  console.log("SubmitButton loaded",loading);
+  
   return (
     <>
       <Button type='submit' disabled={loading} className={cn(
