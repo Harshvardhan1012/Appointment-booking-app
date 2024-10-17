@@ -14,10 +14,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
   // const cookies = request.cookies;
   const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
-  const cookiesget = cookies().get("_Secure-authjs.session-token");
+  const cookiesget = cookies().get("__Secure-authjs.session-token");
   if(cookiesget){ 
   const session = await decodeSessionCookie(cookiesget);
 
+  console.log(session,'473243245487584735843587458745');
 const allowedPaths = [
     new RegExp(`^/admin/${session?.id}$`), // Match for /profile/[userId]
     new RegExp(`^/profile/${session?.id}$`), // Match for /profile/[userId]
