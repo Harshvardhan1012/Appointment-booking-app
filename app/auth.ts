@@ -50,10 +50,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
       async sendVerificationRequest(params) {
         const { identifier, provider, theme } = params
-        const url=`${process.env.NEXTAUTH_URL}/api/auth/callback/nodemailer?token=${params.token}&email=${params.identifier}`
-        console.log(url,"url");
+        const url=`${process.env.NEXTAUTH_URL as string}/api/auth/callback/nodemailer?token=${params.token}&email=${params.identifier}`
         const { host } = new URL(url)
-        console.log(url,"hostand url combined",host);
         const transport = createTransport(provider.server)
         const result = await transport.sendMail({
           to: identifier,
