@@ -51,14 +51,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       async sendVerificationRequest(params) {
         const { identifier, provider, theme } = params
         const url=`${process.env.NEXTAUTH_URL as string}/api/auth/callback/nodemailer?token=${params.token}&email=${params.identifier}`
-        const { host } = new URL(url)
+        // const { host } = new URL(url)
         const transport = createTransport(provider.server)
         const result = await transport.sendMail({
           to: identifier,
           from: process.env.EMAIL_FROM,
           subject: `Sign in to Appointment Booking App`,
-          text: text({ url, host }),
-          html: html({ url, host, theme }),
+          text: text({ url, host: process.env.NEXTAUTH_URL as string }),
+          html: html({ url, host:process.env.NEXTAUTH_URL as string, theme }),
         })
         const failed = result.rejected.concat(result.pending).filter(Boolean)
         if (failed.length) {
