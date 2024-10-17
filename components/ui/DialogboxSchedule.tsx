@@ -24,8 +24,7 @@ import clearCachesByServerAction from "./../../lib/action/clearcachesbyaction";
 export function DialogboxSchedule({ title, description, id, physician, setOpen }: { title: string, description: string, id: number, physician: string, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const [loading, setloading] = React.useState(false);
-    console.log(id, "id");
-   const form = useForm<z.infer<typeof scheduleFormSchema>>({
+    const form = useForm<z.infer<typeof scheduleFormSchema>>({
         resolver: zodResolver(scheduleFormSchema),
         defaultValues: {
             physician: physician,

@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from '../ui/button'
 
-export default function Navigation() {
+
+export  default function Navigation() {
+ 
   const [isOpen, setIsOpen] = React.useState(false)
-  const noNavbarPaths = ['/login', '/','/admin/register'];
   const router = useRouter()
-  const pathnames = usePathname()
 
   const handlelogoutfunction = async () => {
     try {      
@@ -36,9 +36,7 @@ export default function Navigation() {
     }
   }
 
-  if (noNavbarPaths.includes(pathnames)) {
-    return null; // Do not render navbar on login and signup pages
-  }
+  
 
   return (
     <form className='flex justify-between items-center bg-dark-400 text-white p-4 fixed top-0 left-0 z-10 w-full'>

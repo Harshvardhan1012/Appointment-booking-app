@@ -1,45 +1,62 @@
-import { auth } from "./app/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { profilefind } from "./lib/action/profile.action";
+// import { profilefind, sessionUser } from "./lib/action/profile.action";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import { decode } from "next-auth/jwt";
+import { cookies } from "next/headers";
+
+
+
 
 const publicPages = ["/login", "/home", "/","/admin/register"];
 
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
-  console.log("Middleware called00000000000000000000000000000000000000");
-  const session = await auth();
-  console.log(session?.user, "session");
-  if (session) {
-  const allowedPaths = [
-    new RegExp(`^/admin/${session?.user?.id}$`), // Match for /profile/[userId]
-    new RegExp(`^/profile/${session?.user?.id}$`), // Match for /profile/[userId]
+  // const cookies = request.cookies;
+  const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
+  const cookiesget = cookies().get("authjs.session-token");
+  if(cookiesget){ 
+  const session = await decodeSessionCookie(cookiesget);
+
+const allowedPaths = [
+    new RegExp(`^/admin/${session?.id}$`), // Match for /profile/[userId]
+    new RegExp(`^/profile/${session?.id}$`), // Match for /profile/[userId]
     /^\/profile\/[^\/]+\/appointment-form\/success\/[^\/]+$/, // Match /profile/[userId]/appointment-form/success/[appointmentId]
-    new RegExp(`^/profile/${session?.user?.id}/appointment-form$`), // Allow /profile/[userId]/appointment-form
+    new RegExp(`^/profile/${session?.id}/appointment-form$`), // Allow /profile/[userId]/appointment-form
   ];
 
 
-  if(session?.user?.role=='Admin' && pathname !== `/admin/${session?.user?.id}` ){
+  if(session?.role=='Admin' && pathname !== `/admin/${session?.id}` ){
     console.log("redirecting to admin");
     return NextResponse.redirect(
-      new URL(`/admin/${session?.user?.id}`, request.url)
+      new URL(`/admin/${session?.id}`, request.url)
     );
   }
-  const isProfileCreated = await profilefind(Number(session?.user?.id));
-  if (isProfileCreated && pathname == `/profile/${session?.user?.id}`) {
+  
+  const isProfileCreated = await fetch(`${baseUrl}/api/auth/profilefind`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: session?.id }),
+  });
+
+  const result = await isProfileCreated.json();
+  if (result.message && pathname == `/profile/${session?.id}`) {
     return NextResponse.redirect(
       new URL(`${pathname}/appointment-form`, request.url)
     );
   }
-  if (!isProfileCreated && pathname == `/profile/${session?.user?.id}/appointment-form`) {
+  if (!result.message && pathname == `/profile/${session?.id}/appointment-form`) {
     console.log("Redirecting to profile 11111");
     return NextResponse.redirect(
-      new URL(`/profile/${session?.user?.id}`, request.url)
+      new URL(`/profile/${session?.id}`, request.url)
     );
   }
   if (publicPages.includes(pathname)) {
     console.log("Redirecting to profile 22222");
     return NextResponse.redirect(
-      new URL(`/profile/${session?.user?.id}`, request.url)
+      new URL(`/profile/${session?.id}`, request.url)
     ); // Redirect authenticated users to the dashboard
   }
     if (!allowedPaths.some((path) => path.test(pathname))) {
@@ -48,7 +65,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (!session && !publicPages.includes(pathname)) {
+  if (!cookiesget && !publicPages.includes(pathname)) {
     return NextResponse.redirect(new URL("/not-found", request.url)); 
   }
  
@@ -56,8 +73,24 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// // Configuring the matcher to apply the middleware to specific routes
+
 export const config = {
   matcher: ["/", "/profile/:path*", "/login","/admin/:path*","/admin/register"],
   // Apply to specific routes
 };
+
+
+async function decodeSessionCookie(cookie:RequestCookie) {
+  // Your logic to decode or verify the cookie (e.g., JWT, base64, etc.)
+  try {
+    // Assuming it's a JWT token
+    const cookies=await decode({
+      token: cookie.value,
+      secret: process.env.AUTH_SECRET as string,
+      salt:cookie.name,
+    });
+    return cookies;
+  } catch (error) {
+    return null;
+  }
+}

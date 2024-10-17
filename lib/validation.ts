@@ -14,16 +14,14 @@ export const formSchema = z.object({
 
 //login form schema
 export const loginformschema = z.object({
-  password:z.string().nonempty("password is required"),
   email: z
   .string()
   .email("Invalid email address") // Email validation
 
 });
 export const doctorRegisterSchema=z.object({
-  FullName:z.string().nonempty("Name is required"),
+  name:z.string().nonempty("Name is required"),
   email:z.string().email("Invalid email address"),
-  password:z.string().nonempty("password is required"),
 })
 
 //register form schema

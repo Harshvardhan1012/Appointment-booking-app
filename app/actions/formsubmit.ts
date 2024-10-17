@@ -20,7 +20,6 @@ export async function handleCredentialsSignin({
     const userfind=await prisma.user.findUnique({
       where:{
         email:email,
-        password:password
       }
     });
     if (signin) {
