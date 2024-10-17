@@ -1,22 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { decode } from "next-auth/jwt";
-import { getToken } from "next-auth/jwt";
-import  getServerSession from 'next-auth'
-import { cookies } from "next/headers";
+import { decode, getToken } from "next-auth/jwt";
 
 const publicPages = ["/login", "/home", "/","/admin/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
   const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
-  // const session= await getToken({ req: request, secret:process.env.AUTH_SECRET as string });
-  // const {data:session}=useSession();
-  const cookiesget = cookies().get("__Secure-authjs.session-token");
-
-  console.log(cookiesget,"token34324344324324");
-  if(cookiesget){
-    const session=await decodeSessionCookie(cookiesget);
+  const session= await getToken({ req: request, secret:process.env.AUTH_SECRET as string });
 
   console.log(session,"token34324344324324");
 
@@ -44,13 +35,15 @@ const allowedPaths = [
     body: JSON.stringify({ id: session?.id }),
   });
 
-  const result = await isProfileCreated.json();
-  if (result.message && pathname == `/profile/${session?.id}`) {
+
+  console.log(isProfileCreated.ok,"isProfileCreated");
+  
+  if (isProfileCreated.ok && pathname == `/profile/${session?.id}`) {
     return NextResponse.redirect(
       new URL(`${pathname}/appointment-form`, request.url)
     );
   }
-  if (!result.message && pathname == `/profile/${session?.id}/appointment-form`) {
+  if (!isProfileCreated.ok && pathname == `/profile/${session?.id}/appointment-form`) {
     console.log("Redirecting to profile 11111");
     return NextResponse.redirect(
       new URL(`/profile/${session?.id}`, request.url)
@@ -75,7 +68,7 @@ const allowedPaths = [
 
   return NextResponse.next();
 }
-}
+
 
 
 export const config = {
