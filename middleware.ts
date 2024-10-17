@@ -2,23 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 // import { profilefind, sessionUser } from "./lib/action/profile.action";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { decode } from "next-auth/jwt";
-import { cookies } from "next/headers";
-
-
-
+import { getToken } from "next-auth/jwt";
 
 const publicPages = ["/login", "/home", "/","/admin/register"];
 
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
-  // const cookies = request.cookies;
   const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
-  const cookiesget = cookies().get("__Secure-authjs.session-token");
-  if(cookiesget){ 
-  const session = await decodeSessionCookie(cookiesget);
+  const session= await getToken({ req: request, secret:process.env.AUTH_SECRET as string });
 
-  console.log(session,'473243245487584735843587458745');
+  console.log(session,"token34324344324324");
+
+  if(session){
 const allowedPaths = [
     new RegExp(`^/admin/${session?.id}$`), // Match for /profile/[userId]
     new RegExp(`^/profile/${session?.id}$`), // Match for /profile/[userId]
@@ -66,7 +62,7 @@ const allowedPaths = [
     }
   }
 
-  if (!cookiesget && !publicPages.includes(pathname)) {
+  if (!session && !publicPages.includes(pathname)) {
     return NextResponse.redirect(new URL("/not-found", request.url)); 
   }
  
