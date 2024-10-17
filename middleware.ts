@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
   // const cookies = request.cookies;
   const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
-  const cookiesget = cookies().get("authjs.session-token");
+  const cookiesget = cookies().get("_Secure-authjs.session-token");
   if(cookiesget){ 
   const session = await decodeSessionCookie(cookiesget);
 
