@@ -5,9 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// export const parseStringify = (value:string) => JSON.parse(JSON.stringify(value));
 
-export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
 // FORMAT DATE TIME
 export const formatDateTime = (dateString: Date | string, timeZone: string = Intl.DateTimeFormat().resolvedOptions().timeZone) => {
@@ -72,10 +70,3 @@ export const formatDateTime = (dateString: Date | string, timeZone: string = Int
   };
 };
 
-export function encryptKey(passkey: string) {
-  return btoa(passkey);
-}
-
-export function decryptKey(passkey: string) {
-  return atob(passkey);
-}

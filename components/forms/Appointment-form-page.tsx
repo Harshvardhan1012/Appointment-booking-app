@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { SubmitButton } from '../SubmitButton';
 
-export default function AppointmentFormPage({userId}:{userId:number}) {
+export default function AppointmentFormPage({userId}:{userId:string}) {
 
     const router = useRouter();
 
@@ -25,6 +25,8 @@ export default function AppointmentFormPage({userId}:{userId:number}) {
             Reason: "",
         },
     });
+
+    
     const onSubmit = async (values: z.infer<typeof appointmentformschema>) => {
         try {
             setIsLoading(true);

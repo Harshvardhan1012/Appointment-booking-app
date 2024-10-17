@@ -2,6 +2,17 @@ import { auth } from "@/app/auth";
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client/edge";
 import { NextResponse } from "next/server";
+import { createTransport } from "nodemailer";
+
+
+const transport = createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD
+  }
+})
+
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -12,12 +23,31 @@ export async function POST(req: Request) {
     }
    const appointment= await prisma.appointment.create({
       data: {
-        physicianId: Number(body.physician),
+        physicianId: body.physician,
         Reason: body.Reason,
         Date: new Date(),
-        userId: Number(session?.user?.id), // Assuming userId is provided in the request body
+        userId: session?.user?.id as string, // Assuming userId is provided in the request body
       },
     });
+    const user=await prisma.user.findUnique({
+      where:{
+        id:appointment.physicianId
+      }
+    })
+    // await resend.emails.send({
+    //   from: 'hs883532@gmail.com', // Replace with your "from" email
+    //   to:"kaka40121@gmail.com",
+    //   subject:`Appointment requested with physician ${body.physician} date ${new Date().getDay()-new Date().getMonth()-new Date().getFullYear()}`,
+    //   html: `<p>appointment booked by by user ${session?.user.name}</p>`,
+    // });
+    await transport.sendMail({
+      to: session?.user.email,
+      from: process.env.EMAIL_FROM,
+      subject: `Appointment Requested with physician ${user?.name}`,
+      // text: `Appointment requested with physician ${body.physician}`,
+      text: `Appointment requested by user ${session?.user.name}  on date ${new Date().getDate()}-${new Date().getMonth()+1}-${new Date().getFullYear()}`,
+    });
+
     return NextResponse.json({message:'appointment requested',appointment}, { status: 201 });
   } catch (error) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {   

@@ -118,17 +118,18 @@ export default function RegisterPage() {
               placeholder="(555) 123-4567"
             />
             <SubmitButton label='Get Started' loading={loading} buttonColor='green' />
+            {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
+            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
             <span className='text-white flex items-center justify-center'>
               Already have an account?&nbsp;
               <Link href="/login" className='text-blue-500 hover:text-blue-300 underline ml-1'>
                 Login
               </Link>
             </span>
-            {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
-            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
 
           </form>
         </Form>
+     
       </div>
     </div>
 

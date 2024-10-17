@@ -2,22 +2,22 @@
 import prisma from "@/lib/db";
 
 
-export const doctorName=async(id:number)=>{
+export const doctorName=async(id:string)=>{
   try{
   const user = await prisma.user.findUnique({
     where: {
       id,
     },
   });
-
-  return user?.FullName
+  console.log(user?.name,"user?.name");
+  return user?.name
   }
  catch(error){
   return false;
 }
 }
 
-export async function findDoctor(id:number) {
+export async function findDoctor(id:string) {
   try {
    
     const appointments = await prisma.appointment.findMany({
@@ -60,7 +60,7 @@ export const appointmentcount = async () => {
   }
 };
 
-export const doctorAppointmentCount = async (id:number) => {
+export const doctorAppointmentCount = async (id:string) => {
   try {
 
   
@@ -122,7 +122,7 @@ export const appointmentfindUser = async (appointmentId: number) => {
     
     if (appointment) {
       return {
-        user: user?.FullName,
+        user: user?.name,
         appointment,
       };
     }
