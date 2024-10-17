@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { decode, getToken } from "next-auth/jwt";
+import { decode } from "next-auth/jwt";
 import { cookies } from "next/headers";
 
 const publicPages = ["/login", "/home", "/","/admin/register"];

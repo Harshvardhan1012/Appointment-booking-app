@@ -40,7 +40,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     
     Nodemailer({
-      // apiKey: process.env.RESEND_API_KEY,
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: Number(process.env.EMAIL_SERVER_PORT),
@@ -50,8 +49,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         },
       },
       async sendVerificationRequest(params) {
-        const { identifier, url, provider, theme } = params
+        const { identifier, provider, theme } = params
+        const url=`${process.env.NEXTAUTH_URL}/api/auth/callback/nodemailer?token=${params.token}&email=${params.identifier}`
         const { host } = new URL(url)
+        console.log(url,"hostand url combined");
         const transport = createTransport(provider.server)
         const result = await transport.sendMail({
           to: identifier,
