@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { profilefind, sessionUser } from "./lib/action/profile.action";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { decode } from "next-auth/jwt";
 import { getToken } from "next-auth/jwt";
 
 const publicPages = ["/login", "/home", "/","/admin/register"];
-
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
