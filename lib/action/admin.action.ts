@@ -18,9 +18,8 @@ export const adminRegister=async (user:z.infer<typeof doctorRegisterSchema>) => 
 
         const adminUser=await prisma.user.create({
             data: {
-                FullName: user.FullName,
+                name: user.name,
                 email: user.email,
-                password: user.password,
                 role: "Admin",
             },
         });
@@ -34,7 +33,7 @@ export const adminRegister=async (user:z.infer<typeof doctorRegisterSchema>) => 
     } catch (e) { 
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === "P2002")
-              return {message:"email id already used",status: 409 };
+              return {message:"Email already registered",status: 409 };
           }
         return {
             status: 500,
@@ -70,8 +69,8 @@ export const userAdmin=async () => {
             },
         });
 
-        if(user && user!==null){
-        return user.map((name)=>{return {FullName:name.FullName,id:name.id}
+        if(user && user!==null && user.length>0){
+        return user.map((name)=>{return {name:name?.name,id:name.id}
         });
         }
         return [];

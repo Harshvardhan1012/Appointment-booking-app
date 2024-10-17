@@ -1,6 +1,6 @@
+"use server"
 import LoginPage from '@/components/forms/LoginPage'
-import { auth } from '../auth';
-import { redirect } from 'next/navigation';
+
 
 export default async function Page() {
   // const session = await auth();
@@ -10,5 +10,6 @@ export default async function Page() {
   // }
   return (
     <LoginPage />
+
   )
 }

@@ -25,8 +25,8 @@ export default function DoctorRegisterPage() {
         resolver: zodResolver(doctorRegisterSchema),
         defaultValues: {
             email: "",
-            password: "",
-            FullName: "",
+            
+            name: "",
         },
     });
 
@@ -39,8 +39,8 @@ export default function DoctorRegisterPage() {
         try {
             const user = {
                 email: values.email,
-                password: values.password,
-                FullName: values.FullName,
+               
+                name: values.name,
                 // ProfilePhoto: values.ProfilePhoto,
             };
             const register = await adminRegister(user);
@@ -84,9 +84,9 @@ export default function DoctorRegisterPage() {
                         <CustomFormField
                             fieldType={FormFieldType.INPUT}
                             control={form.control}
-                            name="FullName"
+                            name="name"
                             label="Full Name"
-                            placeholder="Enter Full Name"
+                            placeholder="Harshvardhan Singh"
                             iconSrc="/assets/icons/user.svg"
                             iconAlt="user"
                         />
@@ -94,31 +94,14 @@ export default function DoctorRegisterPage() {
                             fieldType={FormFieldType.INPUT}
                             control={form.control}
                             name="email"
-                            label="Enter Email Address"
+                            label="Email Address"
                             placeholder="harsh@gmail.com"
                             iconSrc='/assets/icons/email.svg'
                         />
 
-                        <CustomFormField
-                            fieldType={FormFieldType.PASSWORD}
-                            control={form.control}
-                            name="password"
-                            label="Password"
-                            placeholder="Enter password"
-                            iconSrc='/assets/icons/password.svg'
-                            iconAlt="pass"
-                        />
-                        {/* <CustomFormField
-                            fieldType={FormFieldType.SKELETON}
-                            control={form.control}
-                            name="ProfilePhoto"
-                            label="Upload Profile Photo"
-
-                        /> */}
-
+                        <SubmitButton label='Get Started' loading={loading} buttonColor='green' />
                         {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
                         {errmessage && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
-                        <SubmitButton label='Get Started' loading={loading} buttonColor='green' />
                         <span className='text-white flex items-center justify-center'>
                             Already have an account?&nbsp;
                             <Link href="/login" className='text-blue-500 hover:text-blue-300 underline ml-1'>

@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.profile.create({
       data: {
         user: {
-          connect: { id: Number(session?.user?.id) } // Assuming userId is provided in the request body
+          connect: { id: session?.user?.id } // Assuming userId is provided in the request body
         },
         name: body.name,
         email: body.email,
