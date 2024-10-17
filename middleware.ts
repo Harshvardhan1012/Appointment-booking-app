@@ -2,13 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { decode } from "next-auth/jwt";
 import { getToken } from "next-auth/jwt";
+import  getServerSession from 'next-auth'
+import { cookies } from "next/headers";
 
 const publicPages = ["/login", "/home", "/","/admin/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
   const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
-  const session= await getToken({ req: request, secret:process.env.AUTH_SECRET as string });
+  // const session= await getToken({ req: request, secret:process.env.AUTH_SECRET as string });
+  // const {data:session}=useSession();
+  const cookiesget = cookies().get("__Secure-authjs.session-token");
+
+  console.log(cookiesget,"token34324344324324");
+  if(cookiesget){
+    const session=await decodeSessionCookie(cookiesget);
 
   console.log(session,"token34324344324324");
 
@@ -67,6 +75,7 @@ const allowedPaths = [
 
   return NextResponse.next();
 }
+}
 
 
 export const config = {
@@ -89,3 +98,20 @@ async function decodeSessionCookie(cookie:RequestCookie) {
     return null;
   }
 }
+
+
+// import withAuth  from "next-auth/middleware"
+
+// export default withAuth(
+//   // `withAuth` augments your `Request` with the user's token.
+//   function middleware(req) {
+//     console.log(req.nextauth.token)
+//   },
+//   {
+//     callbacks: {
+//       authorized: ({ token }) => token?.role === "admin",
+//     },
+//   },
+// )
+
+// export const config = { matcher: ["/admin"] }
