@@ -1,11 +1,5 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
-First,migrate the database using prisma
-```bash
-npx prisma migrate dev
-```
-Then, run the development server:
 
 ```bash
 npm run dev
