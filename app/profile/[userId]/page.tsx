@@ -15,7 +15,7 @@ export default async function Page({params}: {params: {userId: string}}) {
   //   redirect('/login');
   // }
   const profile=await profilefind(session?.user?.id!);
-
+  console.log(profile, 'profile');
   if(profile){
     redirect('/profile/'+session?.user.id+'/appointment-form');
   }

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       data: {
         physicianId: body.physician,
         Reason: body.Reason,
-        Date: new Date(),
+        Date: body.Date,
         userId: session?.user?.id as string, // Assuming userId is provided in the request body
       },
     });
@@ -34,12 +34,6 @@ export async function POST(req: Request) {
         id:appointment.physicianId
       }
     })
-    // await resend.emails.send({
-    //   from: 'hs883532@gmail.com', // Replace with your "from" email
-    //   to:"kaka40121@gmail.com",
-    //   subject:`Appointment requested with physician ${body.physician} date ${new Date().getDay()-new Date().getMonth()-new Date().getFullYear()}`,
-    //   html: `<p>appointment booked by by user ${session?.user.name}</p>`,
-    // });
     await transport.sendMail({
       to: session?.user.email,
       from: process.env.EMAIL_FROM,
