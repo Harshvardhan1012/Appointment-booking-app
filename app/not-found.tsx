@@ -21,7 +21,7 @@ export default async function NotFound() {
           </div>
           :
           <div>
-            <Button className='text-lg '> <Link href={`/login`} >Return to home page</Link></Button>
+            <Button className='text-lg '> <Link href={`/`} >Return to home page</Link></Button>
           </div>
       }
 

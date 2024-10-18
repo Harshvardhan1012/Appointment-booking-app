@@ -53,7 +53,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       
         const { host } = new URL(url)
 
-        console.log(url, "url");
+        // console.log(url, "url");
         const transport = createTransport(provider.server)
         const result = await transport.sendMail({
           to: identifier,
