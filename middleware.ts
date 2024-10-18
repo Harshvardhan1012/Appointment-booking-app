@@ -7,7 +7,8 @@ const publicPages = ["/login", "/home", "/","/admin/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
-  const baseUrl = request.nextUrl.origin; // Gets the base URL from the request
+  const baseUrl = process.env.URL!; 
+  console.log(baseUrl,'baseUrl');
   const cookiesget = cookies().get("__Secure-authjs.session-token");
 
   console.log(cookiesget,"token34324344324324");
