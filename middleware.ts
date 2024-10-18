@@ -7,7 +7,7 @@ const publicPages = ["/login", "/home", "/","/admin/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
-
+  console.log("middlldlfdsfdfdsfdsfdsfds")
   const protocol = request.headers.get('x-forwarded-proto') || 'https';
   const host = request.headers.get('host');
   const baseUrl = `${protocol}://${host}`;
@@ -16,8 +16,8 @@ export async function middleware(request: NextRequest) {
   const cookiesget = cookies().get("__Secure-authjs.session-token");
 
   console.log(cookiesget,"token34324344324324");
-  if(cookiesget){
-    const session=await decodeSessionCookie(cookiesget);
+  
+  const session=await decodeSessionCookie(cookiesget!);
 
   console.log(session,"token34324344324324");
 
@@ -37,28 +37,20 @@ const allowedPaths = [
     );
   }
   
-  const isProfileCreated = await fetch(`${baseUrl}/api/auth/profilefind`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id: session?.id }),
-  });
 
 
-  console.log(isProfileCreated.ok,"isProfileCreated");
   
-  if (isProfileCreated.ok && pathname == `/profile/${session?.id}`) {
-    return NextResponse.redirect(
-      new URL(`${pathname}/appointment-form`, request.url)
-    );
-  }
-  if (!isProfileCreated.ok && pathname == `/profile/${session?.id}/appointment-form`) {
-    console.log("Redirecting to profile 11111");
-    return NextResponse.redirect(
-      new URL(`/profile/${session?.id}`, request.url)
-    );
-  }
+  // if (isProfileCreated.ok && pathname == `/profile/${session?.id}`) {
+  //   return NextResponse.redirect(
+  //     new URL(`${pathname}/appointment-form`, request.url)
+  //   );
+  // }
+  // if (!isProfileCreated.ok && pathname == `/profile/${session?.id}/appointment-form`) {
+  //   console.log("Redirecting to profile 11111");
+  //   return NextResponse.redirect(
+  //     new URL(`/profile/${session?.id}`, request.url)
+  //   );
+  // }
   if (publicPages.includes(pathname)) {
     console.log("Redirecting to profile 22222");
     return NextResponse.redirect(
@@ -70,9 +62,10 @@ const allowedPaths = [
       return NextResponse.redirect(new URL("/not-found", request.url)); 
     }
   }
-  }
+  
 
   if (!cookiesget && !publicPages.includes(pathname)) {
+    console.log("Redirecting to profile 444444");
     return NextResponse.redirect(new URL("/not-found", request.url)); 
   }
  
@@ -104,18 +97,3 @@ async function decodeSessionCookie(cookie:RequestCookie) {
 }
 
 
-// import withAuth  from "next-auth/middleware"
-
-// export default withAuth(
-//   // `withAuth` augments your `Request` with the user's token.
-//   function middleware(req) {
-//     console.log(req.nextauth.token)
-//   },
-//   {
-//     callbacks: {
-//       authorized: ({ token }) => token?.role === "admin",
-//     },
-//   },
-// )
-
-// export const config = { matcher: ["/admin"] }

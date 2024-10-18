@@ -13,7 +13,7 @@ import usersvg from './../../public/assets/icons/user.svg';
 import { useRouter } from 'next/navigation';
 
 interface user {
-  id:string;
+    id:string;
     email: string;
     name:string
 }

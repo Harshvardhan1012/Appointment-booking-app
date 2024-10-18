@@ -1,23 +1,24 @@
 import { auth } from '@/app/auth';
 import Dashboard from '@/components/forms/Dashboard';
+import { profilefind } from '@/lib/action/profile.action';
+import { redirect } from 'next/navigation';
 
 
 
-export default async function Page() {
+export default async function Page({params}: {params: {userId: string}}) {
   
   // console.log("userId", userId);
   const session = await auth();
   
-  // if (Number(session?.user?.id) != Number(userId)) {
+  // if (session?.user?.id) != Number(userId) {
   //   //page not found redirect
   //   redirect('/login');
   // }
-  // const profile=await profilefind(Number(userId));
-    // console.log(session,"session2349234324894988324983243298498324");
+  const profile=await profilefind(session?.user?.id!);
 
-  // if(profile){
-  //   redirect('/profile/'+userId+'/appointment-form');
-  // }
+  if(profile){
+    redirect('/profile/'+session?.user.id+'/appointment-form');
+  }
   if(session)
     return (
       <div className="flex justify-center items-center min-h-screen mb-12 mt-20">

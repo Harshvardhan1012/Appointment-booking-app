@@ -1,5 +1,5 @@
-"use server"
-import { auth, signIn, signOut } from "@/app/auth";
+"use server";
+import {  signIn, signOut } from "@/app/auth";
 import prisma from "../db";
 
 export const profilefind = async (userId: string) => {
