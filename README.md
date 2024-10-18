@@ -6,7 +6,6 @@ This is a **Full Stack Appointment Booking Application** built using **Next.js**
 The application is deployed on Vercel. You can access the live application clicking [here](https://appointment-booking-app-two.vercel.app/):
 
 
-
 ## Features
 
 - **User Role**:
