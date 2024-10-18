@@ -1,23 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Appointment Booking App
+
+This is a **Full Stack Appointment Booking Application** built using **Next.js**. It provides a seamless interface for users to book appointments and allows admins to schedule or cancel appointments. The app supports two distinct user roles: **User** and **Admin**.
+
+## Deployment
+The application is deployed on Vercel. You can access the live application clicking [here](https://appointment-booking-app-two.vercel.app/):
 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **User Role**:
+  - Book an appointment with available admins (e.g., doctors).
 
-## Learn More
+- **Admin Role**:
+  - View all user appointments.
+  - Schedule, or cancel appointments.
+  - Manage availability for users.
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Frontend and backend**: [Next.js](https://nextjs.org/) (React Framework)
+- **Authentication**: [NextAuth](https://next-auth.js.org/)
+- **Database**: Postgres
+- **Deployment**: [Vercel](https://vercel.com)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Setup Instructions
 
-## Deploy on Vercel
+To get started with this project, follow these steps:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/Harshvardhan1012/Appointment-booking-app.git
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install dependencies**:
+    Navigate to the project directory and install the required dependencies:
+    ```bash
+    cd appointment-booking-app
+    npm install
+    ```
+
+3. **Configure Environment Variables**:
+   Create a `.env` file in the root directory with the help of .env.example file in the root directory
+
+
+4. **Migrate the schema**:
+   ```bash
+   npx prisma migrate dev
+   ```
+   
+5. **Run the application: Start the development server:**:
+   ```bash
+   npm run dev
+   ```
+   
