@@ -7,8 +7,12 @@ const publicPages = ["/login", "/home", "/","/admin/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl; // Get the current request URL
-  const baseUrl = process.env.URL!; 
-  console.log(baseUrl,'baseUrl');
+
+  const protocol = request.headers.get('x-forwarded-proto') || 'https';
+  const host = request.headers.get('host');
+  const baseUrl = `${protocol}://${host}`;
+  console.log(baseUrl, 'baseUrl');
+  // const baseUrl = process.env.URL!; 
   const cookiesget = cookies().get("__Secure-authjs.session-token");
 
   console.log(cookiesget,"token34324344324324");
