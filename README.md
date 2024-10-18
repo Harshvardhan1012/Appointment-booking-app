@@ -52,5 +52,32 @@ To get started with this project, follow these steps:
 5. **Run the application: Start the development server:**:
    ```bash
    npm run dev
+
    ```
+
+   ## Preview
+
+   1 **Login Page**
+   
+   ![Login-Page](https://github.com/user-attachments/assets/b8b0723d-2d89-4dde-914d-e2a736bc59ff)
+
+   2.**Profile Page**
+
+   ![Profile-Page](https://github.com/user-attachments/assets/b53b39d0-d50c-4e15-9c39-b7b13c29f8ab)
+
+   3.**Appointment-scheduling-page**
+   
+    ![Appointment-booking-page](https://github.com/user-attachments/assets/b48cb94e-9231-4bea-bea9-52970bbebd63)
+
+   4.**Success Page**
+   
+   ![Request-Submitted](https://github.com/user-attachments/assets/1fb5a10f-dc32-4584-b16e-e000b98519d7)
+
+   5.**Admin Panel**
+
+   
+   
+
+
+   
    
