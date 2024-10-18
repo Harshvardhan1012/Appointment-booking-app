@@ -75,8 +75,8 @@ To get started with this project, follow these steps:
 
    5.**Admin Panel**
 
-   
-   
+   ![Admin_Panel](https://github.com/user-attachments/assets/d16c78ad-4b42-4ba3-9b02-4c47159e83eb)
+
 
 
    
