@@ -25,7 +25,6 @@ export default function Dashboard({ user }: { user: user}) {
   const router = useRouter();
   useLayoutEffect(() => {
     router.refresh();
-
   }, [router]);
 
   const [loading, setIsLoading] = useState(false);
@@ -195,14 +194,6 @@ export default function Dashboard({ user }: { user: user}) {
 
 
         </div>
-        {/* <h1 className='text-white text-2xl mt-4'>Verification Documents</h1>
-        <CustomFormField
-          fieldType={FormFieldType.SKELETON}
-          control={form.control}
-          name="identificationDocument"
-          label="Scanned Copy of Identification Document"
-
-        /> */}
         <SubmitButton loading={loading} label='Submit and Continue' />
         {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
       </form>

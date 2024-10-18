@@ -64,7 +64,14 @@ interface CustomProps<T extends FieldValues> {
 const RenderInput = <T extends FieldValues>({ field, props }: { field: ControllerRenderProps<T>; props: CustomProps<T> }) => {
   const [showPassword, setShowPassword] = useState(true);
   const [admin, setAdmin] = useState<{ id: string, name: string }[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleDateChange = (date:Date) => {
+    field.onChange(date); // Update form field
+    setOpen(false); // Close the popover
+  };
+  
   useEffect(() => {
     const fetchAdminUser = async () => {
       setLoading(true);
@@ -124,8 +131,8 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
       )
     case FormFieldType.DATE_PICKER:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-dark-400 w-full text-white shad-input">
-          <Popover>
+        <div className="flex rounded-md border border-dark-500  w-full text-white shad-input">
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
@@ -140,10 +147,14 @@ const RenderInput = <T extends FieldValues>({ field, props }: { field: Controlle
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
               <Calendar
-                className="text-white bg-gray-500 border-inherit"
+                className="text-white bg-dark-300"
                 mode="single"
+                onSelect={(date) => handleDateChange(date as Date)}
+            disabled={(date) =>
+              date < new Date() || date < new Date("1900-01-01")
+            }
                 selected={field.value ?? new Date()}
-                onSelect={d => field.onChange(d)}
+                
                 initialFocus
               />
             </PopoverContent>

@@ -8,8 +8,6 @@ import { Form } from "@/components/ui/form";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../ui/CustomForm";
 import email from './../../public/assets/icons/email.svg';
-import { redirect, useRouter } from 'next/navigation';
-import { handleCredentialsSignin } from '@/app/actions/formsubmit';
 import { SubmitButton } from '../SubmitButton';
 import Link from 'next/link';
 import { loginwithGoogle } from '@/lib/action/profile.action';
@@ -19,10 +17,6 @@ import Image from 'next/image';
 
 
 export default function LoginPage() {
-  const router = useRouter();
-  // useEffect(() => {
-  //   router.refresh();
-  // }, [router]);
   const [errmessage, seterrmessage] = useState("");
   const [success, setsuccess] = useState("");
   const [loading, setloading] = useState(false);
@@ -37,7 +31,6 @@ export default function LoginPage() {
   const onSubmit = async (values: z.infer<typeof loginformschema>) => {
     try {
       setloading(true)
-      // const result = await handleCredentialsSignin(values);
       await signIn("nodemailer", {
         redirect: false,
         email: values.email,
@@ -48,14 +41,13 @@ export default function LoginPage() {
       setTimeout(() => {
         setsuccess("");
       }, 5000);
-      // seterrmessage(result?.message || "unexpected error");
-      // setTimeout(() => {
-      //   seterrmessage("");
-      // }, 3000);
 
     } catch (error) {
       setloading(false);
       seterrmessage("something went wrong");
+      setTimeout(() => {
+        seterrmessage("");
+      }, 3000);
       console.log(error);
 
     }
@@ -85,15 +77,6 @@ export default function LoginPage() {
               iconAlt="email"
             />
 
-            {/* <CustomFormField
-              fieldType={FormFieldType.PASSWORD}
-              control={form.control}
-              name="password"
-              label="Password"
-              placeholder="Enter password"
-              iconSrc="/assets/icons/password.svg"
-            // iconAlt="pass"
-            /> */}
             <SubmitButton loading={loading} label="Login" buttonColor='green' />
             {errmessage && <p className='text-red-500'>{errmessage}</p>}
             {success && <p className='text-green-500 text-center '>{success}</p>}

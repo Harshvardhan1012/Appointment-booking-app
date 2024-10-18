@@ -35,6 +35,8 @@ export default function AppointmentFormPage({userId}:{userId:string}) {
                 Date: values.Date,
                 Reason: values.Reason,
             }
+
+            console.log(user);
             
             const res = await fetch("/api/auth/appointment", {
                 method: "POST",

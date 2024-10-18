@@ -6,23 +6,12 @@ import { cookies } from "next/headers";
 const publicPages = ["/login", "/home", "/","/admin/register"];
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl; // Get the current request URL
-  console.log("middlldlfdsfdfdsfdsfdsfds")
-  const protocol = request.headers.get('x-forwarded-proto') || 'https';
-  const host = request.headers.get('host');
-  const baseUrl = `${protocol}://${host}`;
-  console.log(baseUrl, 'baseUrl');
-  // const baseUrl = process.env.URL!; 
+  const { pathname } = request.nextUrl; 
   const cookiesget = cookies().get("__Secure-authjs.session-token");
-
-  console.log(cookiesget,"token34324344324324");
-  
   const session=await decodeSessionCookie(cookiesget!);
 
-  console.log(session,"token34324344324324");
-
   if(session){
-const allowedPaths = [
+   const allowedPaths = [
     new RegExp(`^/admin/${session?.id}$`), // Match for /profile/[userId]
     new RegExp(`^/profile/${session?.id}$`), // Match for /profile/[userId]
     /^\/profile\/[^\/]+\/appointment-form\/success\/[^\/]+$/, // Match /profile/[userId]/appointment-form/success/[appointmentId]
@@ -38,19 +27,6 @@ const allowedPaths = [
   }
   
 
-
-  
-  // if (isProfileCreated.ok && pathname == `/profile/${session?.id}`) {
-  //   return NextResponse.redirect(
-  //     new URL(`${pathname}/appointment-form`, request.url)
-  //   );
-  // }
-  // if (!isProfileCreated.ok && pathname == `/profile/${session?.id}/appointment-form`) {
-  //   console.log("Redirecting to profile 11111");
-  //   return NextResponse.redirect(
-  //     new URL(`/profile/${session?.id}`, request.url)
-  //   );
-  // }
   if (publicPages.includes(pathname)) {
     console.log("Redirecting to profile 22222");
     return NextResponse.redirect(
@@ -82,9 +58,7 @@ export const config = {
 
 
 async function decodeSessionCookie(cookie:RequestCookie) {
-  // Your logic to decode or verify the cookie (e.g., JWT, base64, etc.)
   try {
-    // Assuming it's a JWT token
     const cookies=await decode({
       token: cookie.value,
       secret: process.env.AUTH_SECRET as string,
