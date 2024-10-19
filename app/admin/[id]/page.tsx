@@ -2,21 +2,23 @@ import { StatCard } from "@/components/ui/StatCard";
 import { doctorAppointmentCount, doctorName, findDoctor } from "@/lib/action/appointment.action";
 import { DataTable } from "@/components/forms/table/DataTable";
 import { columns } from "@/components/forms/table/columns";
+import NotFound from "@/app/not-found";
 
 
-export default async function page({ params }: { params: { id: number } }) {
+export default async function page({ params }: { params: { id: string } }) {
 
-
-    const DoctorName=await doctorName(Number(params.id));
+   
+    const DoctorName=await doctorName(params.id);
+   
     if(!DoctorName){
-        return <h1>Doctor not found</h1>
+        return <NotFound/>
     }
-    const appointment = await findDoctor(Number(params.id));
+    const appointment = await findDoctor(params.id);
 
     if(!appointment){
         return <h1>No appointment found</h1>
     }
-    const count = await doctorAppointmentCount(Number(params.id));
+    const count = await doctorAppointmentCount(params.id);
 
     if (!count) {
         return <h1>no count</h1>
@@ -26,7 +28,8 @@ export default async function page({ params }: { params: { id: number } }) {
     const updatedAppointments = appointment.map((item) => ({
         ...item,
         adminName: DoctorName, // Add doctorName to each data entry
-      }));
+        userId: Number(item.userId), // Ensure userId is a number
+    }));
 
     return (
         <div>

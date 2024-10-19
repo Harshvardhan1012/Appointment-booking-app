@@ -1,8 +1,8 @@
-"use server"
-import { signOut } from "@/app/auth";
+"use server";
+import {  signIn, signOut } from "@/app/auth";
 import prisma from "../db";
 
-export const profilefind = async (userId: number) => {
+export const profilefind = async (userId: string) => {
   try {
     const res = await prisma.profile.findUnique({
       where: {
@@ -33,4 +33,12 @@ export const handlelogout=async()=>{
         
     }
     
+}
+
+export const loginwithGoogle = async () => {
+  
+    await signIn("google");
+    
+    return true;
+  
 }

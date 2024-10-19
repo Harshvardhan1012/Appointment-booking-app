@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,51 +8,48 @@ import { Form } from "@/components/ui/form";
 import "react-phone-number-input/style.css";
 import CustomFormField, { FormFieldType } from "../ui/CustomForm";
 import email from './../../public/assets/icons/email.svg';
-import { useRouter } from 'next/navigation';
-import { handleCredentialsSignin } from '@/app/actions/formsubmit';
 import { SubmitButton } from '../SubmitButton';
 import Link from 'next/link';
+import { loginwithGoogle } from '@/lib/action/profile.action';
+import { Button } from '../ui/button';
+import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 
 
 export default function LoginPage() {
-  const router = useRouter();
-  // useEffect(() => {
-  //   router.refresh();
-  // }, [router]);
   const [errmessage, seterrmessage] = useState("");
+  const [success, setsuccess] = useState("");
   const [loading, setloading] = useState(false);
 
   const form = useForm<z.infer<typeof loginformschema>>({
     resolver: zodResolver(loginformschema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof loginformschema>) => {
     try {
       setloading(true)
-      const result = await handleCredentialsSignin(values);
-      console.log(result, 'result');
-      if (result?.message === "success") {
-        const userId = result.user;
-        console.log(result, '2403434324');
-        if (result.isAdmin === "Admin") {
-          router.push(`/admin/${userId}`)
-          return;
-        }
-        router.push('/profile/' + userId);
-        return;
-      };
+      await signIn("nodemailer", {
+        redirect: false,
+        email: values.email,
+      });
+     
       setloading(false);
-      seterrmessage(result?.message || "unexpected error");
+      setsuccess("Verification link has been sent to your email");
       setTimeout(() => {
-        seterrmessage("");
-      }, 3000);
+        setsuccess("");
+      }, 5000);
 
     } catch (error) {
       setloading(false);
+      seterrmessage("something went wrong");
+      setTimeout(() => {
+        seterrmessage("");
+      }, 3000);
+      console.log(error);
+
     }
   };
 
@@ -80,35 +77,40 @@ export default function LoginPage() {
               iconAlt="email"
             />
 
-            <CustomFormField
-              fieldType={FormFieldType.PASSWORD}
-              control={form.control}
-              name="password"
-              label="Password"
-              placeholder="Enter password"
-              iconSrc="/assets/icons/password.svg"
-            // iconAlt="pass"
-            />
             <SubmitButton loading={loading} label="Login" buttonColor='green' />
             {errmessage && <p className='text-red-500'>{errmessage}</p>}
-            <span className="text-white flex flex-col items-center justify-center mt-4">
-              <p>
-                Don&apos;t have an account?
-              </p>
-              <div className="flex space-x-4">
-                <Link href="/admin/register" className="hover:underline">
-                  Register as Admin
-                </Link>
-                <Link href="/" className="hover:underline">
-                  Register as Patient
-                </Link>
-              </div>
-            </span>
-
-
+            {success && <p className='text-green-500 text-center '>{success}</p>}
 
           </form>
         </Form>
+        <form action={loginwithGoogle} className='flex justify-center mt-5'>
+
+          <Button
+          type='submit'
+            aria-label="Sign in with Google"
+            className="flex items-center bg-inherit border border-button-border-light rounded-full p-0.5 pr-4 w-full"
+          >
+            <div className="flex items-center justify-center bg-inherit w-9 h-9 rounded-full">
+             
+                
+              
+                
+                <Image src="/assets/icons/google.svg" alt="google" width={29} height={29}/>
+             
+            </div>
+            <span className="text-sm text-google-text-gray tracking-wider">Sign in with Google</span>
+          </Button>
+        </form>
+          <span className="text-white flex flex-col items-center justify-center mt-4">
+
+
+            <Link href="/admin/register" className="">
+              Register as Admin
+            </Link>
+
+
+          </span>
+
       </div>
     </div>
   )

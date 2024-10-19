@@ -9,17 +9,22 @@ import CustomFormField, { FormFieldType } from '../ui/CustomForm';
 import { SubmitButton } from '../SubmitButton';
 import { Form } from "@/components/ui/form";
 import email from './../../public/assets/icons/email.svg';
-import user from './../../public/assets/icons/user.svg';
+import usersvg from './../../public/assets/icons/user.svg';
 import { useRouter } from 'next/navigation';
 
+interface user {
+    id:string;
+    email: string;
+    name:string
+}
 
-export default function Dashboard({ userId }: { userId: number }) {
 
+export default function Dashboard({ user }: { user: user}) {
 
+  console.log(user.name, 'username00000000000000000000');
   const router = useRouter();
   useLayoutEffect(() => {
     router.refresh();
-   
   }, [router]);
 
   const [loading, setIsLoading] = useState(false);
@@ -27,8 +32,8 @@ export default function Dashboard({ userId }: { userId: number }) {
   const form = useForm<z.infer<typeof registerformschema>>({
     resolver: zodResolver(registerformschema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user.name ?? "",
+      email: user.email,
       phone: "",
       dob: new Date(),
       gender: "Male",
@@ -47,7 +52,7 @@ export default function Dashboard({ userId }: { userId: number }) {
   const onSubmit = async (values: z.infer<typeof registerformschema>) => {
     setIsLoading(true);
 
-    const user = {
+    const profile = {
       name: values.name,
       email: values.email,
       phone: values.phone,
@@ -67,11 +72,11 @@ export default function Dashboard({ userId }: { userId: number }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify(profile),
     });
 
     if (res?.ok) {
-      router.push("/profile/" + userId + "/appointment-form");
+      router.push("/profile/" + user.id + "/appointment-form");
       return;
     }
     const data = await res.json();
@@ -94,8 +99,9 @@ export default function Dashboard({ userId }: { userId: number }) {
           control={form.control}
           name="name"
           label="Full name"
+          readonly={false}
           placeholder="John Doe"
-          iconSrc={user}
+          iconSrc={usersvg}
           iconAlt="user"
         />
 
@@ -103,6 +109,7 @@ export default function Dashboard({ userId }: { userId: number }) {
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
+            readonly
             name="email"
             label="Email"
             placeholder="johndoe@gmail.com"
@@ -187,14 +194,6 @@ export default function Dashboard({ userId }: { userId: number }) {
 
 
         </div>
-        {/* <h1 className='text-white text-2xl mt-4'>Verification Documents</h1>
-        <CustomFormField
-          fieldType={FormFieldType.SKELETON}
-          control={form.control}
-          name="identificationDocument"
-          label="Scanned Copy of Identification Document"
-
-        /> */}
         <SubmitButton loading={loading} label='Submit and Continue' />
         {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
       </form>
