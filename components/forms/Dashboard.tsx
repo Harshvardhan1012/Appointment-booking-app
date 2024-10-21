@@ -1,26 +1,24 @@
-"use client";
+'use client';
 import { registerformschema } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import "react-phone-number-input/style.css";
+import 'react-phone-number-input/style.css';
 import CustomFormField, { FormFieldType } from '../ui/CustomForm';
 import { SubmitButton } from '../SubmitButton';
-import { Form } from "@/components/ui/form";
+import { Form } from '@/components/ui/form';
 import email from './../../public/assets/icons/email.svg';
 import usersvg from './../../public/assets/icons/user.svg';
 import { useRouter } from 'next/navigation';
 
 interface user {
-    id:string;
-    email: string;
-    name:string
+  id: string;
+  email: string;
+  name: string;
 }
 
-
-export default function Dashboard({ user }: { user: user}) {
-
+export default function Dashboard({ user }: { user: user }) {
   console.log(user.name, 'username00000000000000000000');
   const router = useRouter();
   useLayoutEffect(() => {
@@ -28,26 +26,23 @@ export default function Dashboard({ user }: { user: user}) {
   }, [router]);
 
   const [loading, setIsLoading] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
+  const [errMessage, setErrMessage] = useState('');
   const form = useForm<z.infer<typeof registerformschema>>({
     resolver: zodResolver(registerformschema),
     defaultValues: {
-      name: user.name ?? "",
+      name: user.name ?? '',
       email: user.email,
-      phone: "",
+      phone: '',
       dob: new Date(),
-      gender: "Male",
-      Address: "",
-      Occupation: "",
-      InsuranceId: "",
-      InsuranceProvider: "",
-      Allergies: "",
-      CurrentMedications: "",
+      gender: 'Male',
+      Address: '',
+      Occupation: '',
+      InsuranceId: '',
+      InsuranceProvider: '',
+      Allergies: '',
+      CurrentMedications: '',
     },
   });
-
-
-
 
   const onSubmit = async (values: z.infer<typeof registerformschema>) => {
     setIsLoading(true);
@@ -63,37 +58,34 @@ export default function Dashboard({ user }: { user: user}) {
       InsuranceId: values.InsuranceId,
       InsuranceProvider: values.InsuranceProvider,
       Allergies: values.Allergies,
-      CurrentMedications: values.CurrentMedications
+      CurrentMedications: values.CurrentMedications,
     };
 
-
-    const res = await fetch("/api/auth/profile", {
-      method: "POST",
+    const res = await fetch('/api/auth/profile', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(profile),
     });
 
     if (res?.ok) {
-      router.push("/profile/" + user.id + "/appointment-form");
+      router.push('/profile/' + user.id + '/appointment-form');
       return;
     }
     const data = await res.json();
-    setErrMessage(data?.error ?? "unexpected error");
+    setErrMessage(data?.error ?? 'unexpected error');
 
     setIsLoading(false);
   };
 
   return (
-
-
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex-1 space-y-6 w-full"
       >
-        <h1 className='text-white text-2xl'>Personal Information</h1>
+        <h1 className="text-white text-2xl">Personal Information</h1>
         <CustomFormField
           fieldType={FormFieldType.INPUT}
           control={form.control}
@@ -105,7 +97,7 @@ export default function Dashboard({ user }: { user: user}) {
           iconAlt="user"
         />
 
-        <div className='grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2'>
+        <div className="grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -157,9 +149,9 @@ export default function Dashboard({ user }: { user: user}) {
             placeholder="Business/Job/Student"
           />
         </div>
-        <h1 className='text-white text-2xl mt-4'>Medical Information</h1>
+        <h1 className="text-white text-2xl mt-4">Medical Information</h1>
 
-        <div className='grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2'>
+        <div className="grid grid-cols-1 justify-center gap-3 m-0 lg:grid-cols-2">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -181,7 +173,6 @@ export default function Dashboard({ user }: { user: user}) {
             name="Allergies"
             label="Allergies (if any)"
             placeholder="ex: Maleria/penicillin"
-
           />
 
           <CustomFormField
@@ -191,15 +182,14 @@ export default function Dashboard({ user }: { user: user}) {
             label="Current Medications"
             placeholder="ex:paraacetamol"
           />
-
-
         </div>
-        <SubmitButton loading={loading} label='Submit and Continue' />
-        {errMessage && <p className='text-red-500 text-sm flex justify-center'>{errMessage}</p>}
+        <SubmitButton loading={loading} label="Submit and Continue" buttonColor='green'/>
+        {errMessage && (
+          <p className="text-red-500 text-sm flex justify-center">
+            {errMessage}
+          </p>
+        )}
       </form>
     </Form>
-
   );
 }
-
-

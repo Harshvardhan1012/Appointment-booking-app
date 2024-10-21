@@ -1,38 +1,35 @@
-"use client";
-import React, { useState } from 'react'
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { formSchema } from './../../lib/validation'
-import { Form } from "@/components/ui/form";
+'use client';
+import React, { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { formSchema } from './../../lib/validation';
+import { Form } from '@/components/ui/form';
 
-import "react-phone-number-input/style.css";
-import CustomFormField, { FormFieldType } from './../ui/CustomForm'
+import 'react-phone-number-input/style.css';
+import CustomFormField, { FormFieldType } from './../ui/CustomForm';
 import { useRouter } from 'next/navigation';
 import { SubmitButton } from '../SubmitButton';
 import Link from 'next/link';
 
-
 export default function RegisterPage() {
-
   const [err, seterr] = useState(false);
   const [success, setsuccess] = useState(false);
-  const [errmessage, seterrmessage] = useState("");
+  const [errmessage, seterrmessage] = useState('');
   const [loading, setloading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      password: "",
-      email: "",
-      phone: "",
+      password: '',
+      email: '',
+      phone: '',
     },
   });
 
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
     setloading(true);
 
     try {
@@ -42,11 +39,10 @@ export default function RegisterPage() {
         phone: values.phone,
       };
 
-
-      const signin = await fetch("/api/auth/signup", {
-        method: "POST",
+      const signin = await fetch('/api/auth/signup', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(user),
       });
@@ -54,27 +50,23 @@ export default function RegisterPage() {
       const data = await signin.json();
 
       if (signin?.ok) {
-        console.log("signin success", data);
+        console.log('signin success', data);
         setsuccess(true);
         router.push(`/login`);
-        return
-      }
-      else {
+        return;
+      } else {
         seterr(true);
         seterrmessage(data.message);
         setTimeout(() => {
           seterr(false);
-          seterrmessage("");
+          seterrmessage('');
         }, 3000);
       }
       setloading(false);
-
-    }
-    catch (error) {
+    } catch (error) {
       setloading(false);
-      console.error("Login error:", error);
+      console.error('Login error:', error);
     }
-
   };
 
   return (
@@ -106,7 +98,7 @@ export default function RegisterPage() {
               name="password"
               label="Password"
               placeholder="Enter password"
-              iconSrc='/assets/icons/password.svg'
+              iconSrc="/assets/icons/password.svg"
               iconAlt="pass"
             />
 
@@ -117,21 +109,34 @@ export default function RegisterPage() {
               label="Phone number"
               placeholder="(555) 123-4567"
             />
-            <SubmitButton label='Get Started' loading={loading} buttonColor='green' />
-            {err && <p className='text-red-700 text-sm flex justify-center'>{errmessage}</p>}
-            {success && <p className='text-green-700 text-sm flex justify-center'>Account created redirecting to login page</p>}
-            <span className='text-white flex items-center justify-center'>
+            <SubmitButton
+              label="Get Started"
+              loading={loading}
+              buttonColor="green"
+
+            />
+            {err && (
+              <p className="text-red-700 text-sm flex justify-center">
+                {errmessage}
+              </p>
+            )}
+            {success && (
+              <p className="text-green-700 text-sm flex justify-center">
+                Account created redirecting to login page
+              </p>
+            )}
+            <span className="text-white flex items-center justify-center">
               Already have an account?&nbsp;
-              <Link href="/login" className='text-blue-500 hover:text-blue-300 underline ml-1'>
+              <Link
+                href="/login"
+                className="text-blue-500 hover:text-blue-300 underline ml-1"
+              >
                 Login
               </Link>
             </span>
-
           </form>
         </Form>
-     
       </div>
     </div>
-
-  )
+  );
 }

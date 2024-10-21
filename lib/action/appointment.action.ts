@@ -1,33 +1,30 @@
-"use server";
-import prisma from "@/lib/db";
+'use server';
+import prisma from '@/lib/db';
 
-
-export const doctorName=async(id:string)=>{
-  try{
-  const user = await prisma.user.findUnique({
-    where: {
-      id,
-    },
-  });
-  console.log(user?.name,"user?.name");
-  return user?.name
-  }
- catch(error){
-  return false;
-}
-}
-
-export async function findDoctor(id:string) {
+export const doctorName = async (id: string) => {
   try {
-   
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    console.log(user?.name, 'user?.name');
+    return user?.name;
+  } catch (error) {
+    return false;
+  }
+};
+
+export async function findDoctor(id: string) {
+  try {
     const appointments = await prisma.appointment.findMany({
       where: {
-        physicianId:id,
+        physicianId: id,
       },
     });
     return appointments;
   } catch (error) {
-    console.error("Error fetching appointments:", error);
+    console.error('Error fetching appointments:', error);
     return false;
   }
 }
@@ -36,17 +33,17 @@ export const appointmentcount = async () => {
   try {
     const PendingCount = await prisma.appointment.count({
       where: {
-        AppointmentStatus: "Pending",
+        AppointmentStatus: 'Pending',
       },
     });
     const ApprovedCount = await prisma.appointment.count({
       where: {
-        AppointmentStatus: "Approved",
+        AppointmentStatus: 'Approved',
       },
     });
     const CancelledCount = await prisma.appointment.count({
       where: {
-        AppointmentStatus: "Rejected",
+        AppointmentStatus: 'Rejected',
       },
     });
     return {
@@ -55,31 +52,29 @@ export const appointmentcount = async () => {
       CancelledCount,
     };
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error('Error creating user:', error);
     return false;
   }
 };
 
-export const doctorAppointmentCount = async (id:string) => {
+export const doctorAppointmentCount = async (id: string) => {
   try {
-
-  
     const PendingCount = await prisma.appointment.count({
       where: {
         physicianId: id,
-        AppointmentStatus: "Pending",
+        AppointmentStatus: 'Pending',
       },
     });
     const ApprovedCount = await prisma.appointment.count({
       where: {
         physicianId: id,
-        AppointmentStatus: "Approved",
+        AppointmentStatus: 'Approved',
       },
     });
     const CancelledCount = await prisma.appointment.count({
       where: {
         physicianId: id,
-        AppointmentStatus: "Rejected",
+        AppointmentStatus: 'Rejected',
       },
     });
     return {
@@ -88,24 +83,20 @@ export const doctorAppointmentCount = async (id:string) => {
       CancelledCount,
     };
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error('Error creating user:', error);
     return false;
   }
 };
 
-
 export async function appointmentfind() {
-
   try {
     const appointments = await prisma.appointment.findMany();
-   return appointments;
-    
+    return appointments;
   } catch (error) {
-    console.error("Error fetching appointments:", error);
+    console.error('Error fetching appointments:', error);
     return false;
   }
-} 
-
+}
 
 export const appointmentfindUser = async (appointmentId: number) => {
   try {
@@ -119,7 +110,7 @@ export const appointmentfindUser = async (appointmentId: number) => {
         id: appointment?.physicianId,
       },
     });
-    
+
     if (appointment) {
       return {
         user: user?.name,
@@ -128,8 +119,7 @@ export const appointmentfindUser = async (appointmentId: number) => {
     }
     return false;
   } catch (err) {
-    console.error("Error creating user:", err);
+    console.error('Error creating user:', err);
     return false;
   }
 };
-
