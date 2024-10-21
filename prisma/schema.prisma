@@ -1,11 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
+  // directUrl = env("DIRECT_DATABASE_URL")
 }
 
 enum Gender {
@@ -30,7 +31,6 @@ model User {
   id            String        @id @default(cuid())
   email         String        @unique
   emailVerified DateTime?
-  phone         String?       @unique
   profile       Profile?
   name          String?
   image         String?
@@ -71,17 +71,6 @@ model Account {
   @@id([provider, providerAccountId])
 }
 
-// model Doctor {
-//   id           Int          @id @default(autoincrement())
-//   FullName     String
-//   username     String       @unique
-//   password     String
-//   ProfilePhoto Json
-//   createdAt    DateTime     @default(now())
-//   updatedAt    DateTime     @updatedAt
-//   appointments Appointment?
-// }
-
 model Profile {
   id                     Int      @id @default(autoincrement())
   name                   String
@@ -105,14 +94,12 @@ model Appointment {
   physician         User     @relation("PhysicianAppointments", fields: [physicianId], references: [id])
   physicianId       String
   Reason            String
-  Date              DateTime
+  Date              String
   user              User     @relation("UserAppointments", fields: [userId], references: [id])
   userId            String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   AppointmentStatus Status   @default(Pending)
 
-  // doctor            Doctor   @relation(fields: [doctorId], references: [id])
-  // doctorId          Int      @unique
   @@unique([userId, physicianId]) // Enforces one appointment per physician per user
 }

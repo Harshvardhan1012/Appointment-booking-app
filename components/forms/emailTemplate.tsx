@@ -1,27 +1,26 @@
 export interface Theme {
-  colorScheme?: "auto" | "dark" | "light"
-  logo?: string
-  brandColor?: string
-  buttonText?: string
+  colorScheme?: 'auto' | 'dark' | 'light';
+  logo?: string;
+  brandColor?: string;
+  buttonText?: string;
 }
 export function html(params: { url: string; host: string; theme: Theme }) {
-    const { url, theme } = params
-  
-  
-    const brandColor = theme.brandColor || "#346df1"
-  
-    const buttonText = theme.buttonText || "#fff"
-  
-    const color = {
-      background: "#f9f9f9",
-      text: "#444",
-      mainBackground: "#fff",
-      buttonBackground: brandColor,
-      buttonBorder: brandColor,
-      buttonText,
-    }
-  
-    return `
+  const { url, theme } = params;
+
+  const brandColor = theme.brandColor || '#346df1';
+
+  const buttonText = theme.buttonText || '#fff';
+
+  const color = {
+    background: '#f9f9f9',
+    text: '#444',
+    mainBackground: '#fff',
+    buttonBackground: brandColor,
+    buttonBorder: brandColor,
+    buttonText,
+  };
+
+  return `
   <body style="background: ${color.background};">
     <table width="100%" border="0" cellspacing="20" cellpadding="0"
       style="background: ${color.mainBackground}; max-width: 600px; margin: auto; border-radius: 10px;">
@@ -51,11 +50,10 @@ export function html(params: { url: string; host: string; theme: Theme }) {
       </tr>
     </table>
   </body>
-  `
-  }
-  
-  /** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
-  export function text({ url, host }: { url: string; host: string }) {
-    return `Sign in to Appointment Booking App\n${url}\n\n`
-  }
-  
+  `;
+}
+
+/** Email Text body (fallback for email clients that don't render HTML, e.g. feature phones) */
+export function text({ url, host }: { url: string; host: string }) {
+  return `Sign in to Appointment Booking App\n${url}\n\n`;
+}
