@@ -19,7 +19,7 @@ type Appointmenttable = {
   id: number;
   adminName: string;
   Reason: string;
-  Date: Date;
+  Date: string;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -89,9 +89,7 @@ export const columns: ColumnDef<Appointmenttable>[] = [
       const date = row.original.Date;
       return (
         <span className="flex justify-center items-center">
-          {date.getUTCDate()}-
-          {date.toLocaleString('default', { month: 'long' })}-
-          {date.getUTCFullYear()}
+          {date}
         </span>
       );
     },
