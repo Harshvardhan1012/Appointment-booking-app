@@ -18,5 +18,4 @@ export const IstDate=(newdate:Date)=>{
   const formattedDate = date.toLocaleDateString('en-GB', options).replace(',', '');
   return formattedDate;
 }
-//transport 
 
