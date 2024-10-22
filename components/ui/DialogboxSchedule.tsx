@@ -14,8 +14,9 @@ import CustomFormField, { FormFieldType } from './CustomForm';
 import { scheduleFormSchema } from '@/lib/validation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import clearCachesByServerAction from './../../lib/action/clearcachesbyaction';
+import { updateAppointment } from '@/lib/action/appointment.action';
 
 export function DialogboxSchedule({
   title,
@@ -45,18 +46,22 @@ export function DialogboxSchedule({
 
     try {
       setloading(true);
-      await fetch('/api/auth/appointmentfind', {
-        method: 'PUT',
-        body: JSON.stringify({
-          appointmentId: id,
-          status: 'Approved',
-          remarks: values.Remarks,
-          expectedDate: values.ExpectedDate,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      // await fetch('/api/auth/appointmentfind', {
+      //   method: 'PUT',
+      //   body: JSON.stringify({
+      //     appointmentId: id,
+      //     status: 'Approved',
+      //     remarks: values.Remarks,
+      //     expectedDate: values.ExpectedDate,
+      //   }),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
+      await updateAppointment({appointmentId: id,
+            status: 'Approved',
+            remarks: values.Remarks,
+            expectedDate: values.ExpectedDate})
       await clearCachesByServerAction(`/admin/${id}`);
 
       console.log('appointment approved');

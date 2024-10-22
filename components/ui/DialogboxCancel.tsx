@@ -14,8 +14,9 @@ import CustomFormField, { FormFieldType } from './CustomForm';
 import { cancellationformschema } from '@/lib/validation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import clearCachesByServerAction from './../../lib/action/clearcachesbyaction';
+import { updateAppointment } from '@/lib/action/appointment.action';
 
 export function DialogboxCancel({
   title,
@@ -42,20 +43,25 @@ export function DialogboxCancel({
 
     try {
       setloading(true);
-      const cancelled = await fetch('/api/auth/appointmentfind', {
-        method: 'PUT',
-        body: JSON.stringify({
-          appointmentId: id,
-          status: 'Rejected',
-          remarks: values.CancellationReason,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      // const cancelled = await fetch('/api/auth/appointmentfind', {
+      //   method: 'PUT',
+      //   body: JSON.stringify({
+      //     appointmentId: id,
+      //     status: 'Rejected',
+      //     remarks: values.CancellationReason,
+      //   }),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
+      await updateAppointment({
+        appointmentId: id,
+        status: 'Rejected',
+        remarks: values.CancellationReason,
       });
       await clearCachesByServerAction(`/admin/${id}`);
-      const data = await cancelled.json();
-      console.log(data, 'data');
+      // const data = await cancelled.json();
+      // console.log(data, 'data');
       console.log('appointment canclled');
       setloading(false);
       setOpen(false);

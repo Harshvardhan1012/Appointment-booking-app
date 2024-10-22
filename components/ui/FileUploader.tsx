@@ -14,7 +14,7 @@ export const FileUploader = ({ files, onChange }: FileUploaderProps) => {
     (acceptedFiles: File[]) => {
       onChange(acceptedFiles);
     },
-    [onChange],
+    [onChange]
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });

@@ -21,15 +21,15 @@ export async function middleware(request: NextRequest) {
     if (session?.role == 'Admin' && pathname !== `/admin/${session?.id}`) {
       console.log('redirecting to admin');
       return NextResponse.redirect(
-        new URL(`/admin/${session?.id}`, request.url),
+        new URL(`/admin/${session?.id}`, request.url)
       );
     }
 
     if (publicPages.includes(pathname)) {
       console.log('Redirecting to profile 22222');
       return NextResponse.redirect(
-        new URL(`/profile/${session?.id}`, request.url),
-      ); // Redirect authenticated users to the dashboard
+        new URL(`/profile/${session?.id}`, request.url)
+      ); 
     }
     if (!allowedPaths.some((path) => path.test(pathname))) {
       console.log('Redirecting to profile 333333');

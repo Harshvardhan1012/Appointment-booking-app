@@ -33,7 +33,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setsorting] = useState<SortingState>([]);
+  // const [sorting, setsorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const disablePagination = data.length < 10;
   const table = useReactTable({
@@ -42,15 +42,15 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     enableSortingRemoval: false,
-    initialState: {
-      sorting: [{ id: 'id', desc: false }],
-    },
+    // initialState: {
+    //   sorting: [{ id: 'id', desc: false }],
+    // },
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      sorting,
+      // sorting,
       globalFilter,
     },
-    onSortingChange: setsorting,
+    // onSortingChange: setsorting,
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
   });
@@ -97,7 +97,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 );

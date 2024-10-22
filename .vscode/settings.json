@@ -6,6 +6,15 @@
     "[typescript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",      
     },
+    
+    
+    
+    
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "prettier.requireConfig": true, // Only run Prettier if a configuration file is found
+      "prettier.resolveGlobalModules": true, // Allow Prettier to resolve globally installed modules
+      "prettier.configPath": "./.prettierrc.json", // Explicitly set the path to the Prettier config
+    
     "eslint.lintTask.enable": true,
     "eslint.lintTask.options": "",
     "eslint.format.enable": true,

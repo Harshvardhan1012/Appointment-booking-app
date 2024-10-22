@@ -9,7 +9,7 @@ import { Form } from '@/components/ui/form';
 import 'react-phone-number-input/style.css';
 import CustomFormField, { FormFieldType } from './../ui/CustomForm';
 import { useRouter } from 'next/navigation';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import { adminRegister } from '@/lib/action/admin.action';
 import Link from 'next/link';
 

@@ -9,7 +9,7 @@ import { Form } from '@/components/ui/form';
 import 'react-phone-number-input/style.css';
 import CustomFormField, { FormFieldType } from './../ui/CustomForm';
 import { useRouter } from 'next/navigation';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import Link from 'next/link';
 
 export default function RegisterPage() {
@@ -113,7 +113,6 @@ export default function RegisterPage() {
               label="Get Started"
               loading={loading}
               buttonColor="green"
-
             />
             {err && (
               <p className="text-red-700 text-sm flex justify-center">

@@ -90,7 +90,7 @@ const RenderInput = <T extends FieldValues>({
       const adminUser = await userAdmin();
       if (adminUser && adminUser != null)
         setAdmin(
-          adminUser.map((user) => ({ id: user.id, name: user.name as string })),
+          adminUser.map((user) => ({ id: user.id, name: user.name as string }))
         );
       setLoading(false);
     };
@@ -159,7 +159,7 @@ const RenderInput = <T extends FieldValues>({
                 variant={'outline'}
                 className={cn(
                   'w-full justify-start text-left font-normal border-transparent h-full',
-                  !field.value && 'text-muted-foreground',
+                  !field.value && 'text-muted-foreground'
                 )}
               >
                 <CalendarIcon className="mr-2 h-5 w-5 ml-[-3px] " />
@@ -170,19 +170,22 @@ const RenderInput = <T extends FieldValues>({
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 flex justify-start items-start ml-6" align="start">
+            <PopoverContent
+              className="w-auto p-0 flex justify-start items-start ml-6"
+              align="start"
+            >
               <Calendar
-              className="text-white bg-dark-300"
-              mode="single"
-              onSelect={(date) => {
-              field.onChange(date);
-              setOpenCalender(false);
-              }}
-              disabled={(date) =>
-              date < new Date() || date < new Date('1900-01-01')
-              }
-              selected={field.value ?? new Date()}
-              initialFocus
+                className="text-white bg-dark-300"
+                mode="single"
+                onSelect={(date) => {
+                  field.onChange(date);
+                  setOpenCalender(false);
+                }}
+                disabled={(date) =>
+                  date < new Date() || date < new Date('1900-01-01')
+                }
+                selected={field.value ?? new Date()}
+                initialFocus
               />
             </PopoverContent>
           </Popover>

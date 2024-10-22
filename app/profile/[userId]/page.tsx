@@ -4,7 +4,6 @@ import { profilefind } from '@/lib/action/profile.action';
 import { redirect } from 'next/navigation';
 
 export default async function Page() {
-
   const session = await auth();
 
   const profile = await profilefind(session?.user?.id!);

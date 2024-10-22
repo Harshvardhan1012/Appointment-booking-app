@@ -7,7 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from '@/components/ui/SubmitButton';
+import { requestAppointment } from '@/lib/action/appointment.action';
 
 export default function AppointmentFormPage({ userId }: { userId: string }) {
   const router = useRouter();
@@ -31,33 +32,24 @@ export default function AppointmentFormPage({ userId }: { userId: string }) {
         physician: values.physician,
         Date: values.Date,
         Reason: values.Reason,
+        userId,
       };
 
-      console.log(user);
+      const res = await requestAppointment(user);
 
-      const res = await fetch('/api/auth/appointment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-        cache: 'no-cache',
-      });
-      const data = await res.json();
-
-      if (res?.ok) {
+      if (res.message === 'success') {
         console.log('Appointment success');
 
         router.push(
           '/profile/' +
-            userId +
-            '/appointment-form/success/' +
-            data.appointment.id,
+          userId +
+          '/appointment-form/success/' +
+          res.appointment?.id
         );
         return;
       }
 
-      setErrMessage(data?.error ?? 'unexpected error');
+      setErrMessage(res.error ?? 'unexpected error');
       setTimeout(() => {
         setErrMessage('');
       }, 3000);
