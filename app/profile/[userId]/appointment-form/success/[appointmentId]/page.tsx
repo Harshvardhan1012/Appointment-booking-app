@@ -1,29 +1,11 @@
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import success from './../../../../../../public/assets/icons/check-circle.svg';
-import cancelled from './../../../../../../public/assets/icons/cancelled.svg';
-import pending from './../../../../../../public/assets/icons/pending.svg';
 import Link from 'next/link';
 import { appointmentfindUser } from './../../../../../../lib/action/appointment.action';
+import { statusMap } from '@/app/constants';
 
 
-const statusMap = {
-  Rejected: {
-    color: 'text-red-400',
-    message: 'Your appointment request has been Cancelled',
-    image: { src: cancelled, width: 70, height: 70, alt: 'rejected' },
-  },
-  Approved: {
-    color: 'text-green-500',
-    message: 'Your appointment request has been Approved',
-    image: { src: success, width: 100, height: 100, alt: 'success' },
-  },
-  Pending: {
-    color: 'text-blue-500',
-    message: 'Your appointment request has been successfully submitted',
-    image: { src: pending, width: 50, height: 50, alt: 'pending' },
-  },
-};
+
 
 export default async function Page({
   params,

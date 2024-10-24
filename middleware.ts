@@ -7,7 +7,7 @@ const publicPages = ['/login', '/home', '/', '/admin/register'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const cookiesget = cookies().get('__Secure-authjs.session-token');
+  const cookiesget = cookies().get('authjs.session-token');
   const session = await decodeSessionCookie(cookiesget!);
 
   if (session) {
