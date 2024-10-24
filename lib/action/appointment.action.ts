@@ -4,6 +4,14 @@ import { Appointment, Prisma, Status } from '@prisma/client';
 import { createTransport } from 'nodemailer';
 import { IstDate } from '@/lib/utils';
 
+const transport = createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
+});
+
 export async function findAppointments(id: string) {
   try {
     const appointments = await prisma.appointment.findMany({
@@ -145,14 +153,6 @@ export const appointmentfindUser = async (appointmentId: number) => {
     return false;
   }
 };
-
-const transport = createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
-  },
-});
 
 export async function requestAppointment(data: {
   physician: string;

@@ -5,9 +5,9 @@ import { Prisma } from '@prisma/client';
 import { registerformschema } from '../validation';
 import { z } from 'zod';
 
-export const createProfile=async(
+export async function createProfile(
   data: z.infer<typeof registerformschema> & { userId: string }
-)=>{
+) {
   try {
     const profile = await prisma.$transaction([
       prisma.profile.create({
