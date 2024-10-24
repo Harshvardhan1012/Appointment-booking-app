@@ -5,9 +5,9 @@ import { Prisma } from '@prisma/client';
 import { registerformschema } from '../validation';
 import { z } from 'zod';
 
-export async function createProfile(
+export const createProfile=async(
   data: z.infer<typeof registerformschema> & { userId: string }
-) {
+)=>{
   try {
     const profile = await prisma.$transaction([
       prisma.profile.create({
@@ -89,13 +89,10 @@ export const handlelogout = async ():Promise<boolean> => {
   }
 };
 
-export const loginwithGoogle = async ():Promise<boolean> => {
-  try {
+export const loginwithGoogle = async () => {
+  
     await signIn('google');
 
     return true;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+  
 };
