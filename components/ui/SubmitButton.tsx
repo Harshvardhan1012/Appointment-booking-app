@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from './ui/button';
+import { Button } from './button';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps {
@@ -30,7 +30,7 @@ export const SubmitButton = ({
                 ? 'bg-red-500'
                 : 'bg-dark-500'
           }`,
-          className,
+          className
         )}
         onClick={onClick}
       >

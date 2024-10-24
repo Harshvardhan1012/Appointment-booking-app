@@ -6,11 +6,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import 'react-phone-number-input/style.css';
 import CustomFormField, { FormFieldType } from '../ui/CustomForm';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import { Form } from '@/components/ui/form';
 import email from './../../public/assets/icons/email.svg';
 import usersvg from './../../public/assets/icons/user.svg';
 import { useRouter } from 'next/navigation';
+import { createProfile } from '@/lib/action/profile.action';
 
 interface user {
   id: string;
@@ -59,22 +60,20 @@ export default function Dashboard({ user }: { user: user }) {
       InsuranceProvider: values.InsuranceProvider,
       Allergies: values.Allergies,
       CurrentMedications: values.CurrentMedications,
+      userId: user.id,
     };
 
-    const res = await fetch('/api/auth/profile', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(profile),
-    });
-
-    if (res?.ok) {
+    
+    const res=await createProfile(profile);
+    if (res.status===201) {
       router.push('/profile/' + user.id + '/appointment-form');
       return;
     }
-    const data = await res.json();
-    setErrMessage(data?.error ?? 'unexpected error');
+    setErrMessage(res?.error ?? 'unexpected error');
+
+    setTimeout(()=>{
+      setErrMessage("")
+    },3000);
 
     setIsLoading(false);
   };
@@ -183,7 +182,11 @@ export default function Dashboard({ user }: { user: user }) {
             placeholder="ex:paraacetamol"
           />
         </div>
-        <SubmitButton loading={loading} label="Submit and Continue" buttonColor='green'/>
+        <SubmitButton
+          loading={loading}
+          label="Submit and Continue"
+          buttonColor="green"
+        />
         {errMessage && (
           <p className="text-red-500 text-sm flex justify-center">
             {errMessage}

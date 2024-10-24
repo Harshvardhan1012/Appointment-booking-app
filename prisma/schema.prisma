@@ -79,10 +79,9 @@ model Profile {
   gender                 Gender // Enum for gender
   dob                    DateTime
   Address                String
-  Occupation             String
-  identificationDocument Json?
-  InsuranceId            String
-  InsuranceProvider      String
+  Occupation             String?
+  InsuranceId            String?
+  InsuranceProvider      String?
   Allergies              String?
   CurrentMedications     String?
   userId                 String      @unique

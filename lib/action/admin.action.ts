@@ -5,8 +5,9 @@ import { doctorRegisterSchema } from '../validation';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 
+
 export const adminRegister = async (
-  user: z.infer<typeof doctorRegisterSchema>,
+  user: z.infer<typeof doctorRegisterSchema>
 ) => {
   try {
     const parse = doctorRegisterSchema.safeParse(user);

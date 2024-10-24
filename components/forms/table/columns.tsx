@@ -16,8 +16,13 @@ import { DialogClose } from '@radix-ui/react-dialog';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 type Appointmenttable = {
+  user:{
+    name:string | null
+  }
   id: number;
-  adminName: string;
+  physician:{
+    name:string | null
+  }
   Reason: string;
   Date: string;
   userId: string;
@@ -27,6 +32,7 @@ type Appointmenttable = {
 };
 
 export const columns: ColumnDef<Appointmenttable>[] = [
+
   {
     accessorKey: 'id',
     sortingFn: 'alphanumericCaseSensitive',
@@ -40,6 +46,17 @@ export const columns: ColumnDef<Appointmenttable>[] = [
           .getSortedRowModel()
           ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1;
       return <span className="flex justify-center items-center">{rowid}</span>;
+    },
+  },
+  {
+    accessorKey: 'user',
+    header: () => {
+      return <span className="flex justify-center items-center">Name</span>;
+    },
+
+    cell: ({ row }) => {
+      const name = row.original.user.name;
+      return <span className="flex justify-center items-center">{name?name:"-"}</span>;
     },
   },
   {
@@ -87,31 +104,9 @@ export const columns: ColumnDef<Appointmenttable>[] = [
     },
     cell: ({ row }) => {
       const date = row.original.Date;
-      return (
-        <span className="flex justify-center items-center">
-          {date}
-        </span>
-      );
+      return <span className="flex justify-center items-center">{date}</span>;
     },
   },
-  // {
-  //     accessorKey: "physician",
-  //     header: () => {
-  //         return (
-  //             <span className="flex justify-center items-center">
-  //                 Physician
-  //             </span>
-  //         )
-  //     },
-  //     cell: ({ row }) => {
-  //         const physician = row.original.physician;
-  //         return (
-  //             <span className="flex justify-center items-center">
-  //                 {physician}
-  //             </span>
-  //         )
-  //     }
-  // },
   {
     accessorKey: 'Reason',
     header: () => {
@@ -153,7 +148,7 @@ export const columns: ColumnDef<Appointmenttable>[] = [
                 title="Schedule"
                 description="Select date and add remarks for scheduling an appointment"
                 id={e.id}
-                physician={e.adminName}
+                physician={e.physician.name!}
                 setOpen={setOpen1}
               />
             </Dialog>
@@ -188,7 +183,7 @@ export const columns: ColumnDef<Appointmenttable>[] = [
                   title="enter"
                   description="Select date and add remarks for scheduling an appointment"
                   id={e.id}
-                  physician={e.adminName}
+                  physician={e.physician.name!}
                   setOpen={setOpen1}
                 />
               </Dialog>

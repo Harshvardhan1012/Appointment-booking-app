@@ -8,7 +8,7 @@ import { Form } from '@/components/ui/form';
 import 'react-phone-number-input/style.css';
 import CustomFormField, { FormFieldType } from '../ui/CustomForm';
 import email from './../../public/assets/icons/email.svg';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from './../ui/SubmitButton';
 import Link from 'next/link';
 import { loginwithGoogle } from '@/lib/action/profile.action';
 import { Button } from '../ui/button';

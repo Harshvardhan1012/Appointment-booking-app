@@ -14,8 +14,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '../ui/button';
-import { set } from 'date-fns';
-import { SubmitButton } from '../SubmitButton';
+import { SubmitButton } from './../ui/SubmitButton';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -28,8 +27,8 @@ export default function Navigation() {
       const res = await handlelogout();
       if (res) {
         router.push('/login');
-        setIsOpen(false);
         setIsLoading(false);
+        setIsOpen(false);
         return;
       }
     } catch (err) {
