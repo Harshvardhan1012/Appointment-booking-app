@@ -1,7 +1,7 @@
 import { StatCard } from '@/components/ui/StatCard';
 import {
-  doctorAppointmentCount,
-  findDoctor,
+  adminAppointmentCount,
+  findAppointments,
 } from '@/lib/action/appointment.action';
 import { DataTable } from '@/components/forms/table/DataTable';
 import { columns } from '@/components/forms/table/columns';
@@ -10,8 +10,8 @@ import { auth } from '@/app/auth';
 export default async function page({ params }: { params: { id: string } }) {
   const [session, appointment, count] = await Promise.all([
     auth(),
-    findDoctor(params.id),
-    doctorAppointmentCount(params.id),
+    findAppointments(params.id),
+    adminAppointmentCount(params.id),
   ]);
 
   if (!appointment) {
@@ -44,7 +44,7 @@ export default async function page({ params }: { params: { id: string } }) {
         />
         <StatCard
           type="cancelled"
-          count={count.CancelledCount}
+          count={count.RejectedCount}
           label="Cancelled appointments"
           icon={'/assets/icons/cancelled.svg'}
         />

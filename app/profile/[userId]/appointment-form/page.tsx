@@ -1,6 +1,6 @@
 import { auth } from '@/app/auth';
 import AppointmentFormPage from '@/components/forms/Appointment-form-page';
-import { profilefind } from '@/lib/action/profile.action';
+import { profileFind } from '@/lib/action/profile.action';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
@@ -13,7 +13,7 @@ export default async function AppointmentPage({
 
   const sesssion = await auth();
 
-  const profile = await profilefind(sesssion?.user?.id!);
+  const profile = await profileFind(userId);
   if (!profile) {
     redirect('/profile/' + sesssion?.user.id);
   }

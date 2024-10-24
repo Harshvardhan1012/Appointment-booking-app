@@ -134,20 +134,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
 
   callbacks: {
-    async jwt({ token, user, profile }) {
+    async jwt({ token, user }) {
       if (user) {
         const typedUser = user as JWT; // Type cast user to User
         const userfind = await prisma.user.findUnique({
           where: {
-            email: user.email as string,
+            email: user.email!,
           },
         });
         if (!userfind) {
           const usercreate = await prisma.user.create({
             data: {
-              email: user.email as string,
+              email: user.email!,
               role: typedUser.role ?? 'User',
-              name: user.name as string,
+              name: user.name,
               // password:""
             },
           });

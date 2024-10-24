@@ -5,11 +5,11 @@ import { Prisma } from '@prisma/client';
 import { registerformschema } from '../validation';
 import { z } from 'zod';
 
-
-export async function createProfile(data: z.infer<typeof registerformschema> & {userId:string}) {
+export async function createProfile(
+  data: z.infer<typeof registerformschema> & { userId: string }
+) {
   try {
-
-   const profile= await prisma.$transaction([
+    const profile = await prisma.$transaction([
       prisma.profile.create({
         data: {
           user: {
@@ -28,7 +28,7 @@ export async function createProfile(data: z.infer<typeof registerformschema> & {
           CurrentMedications: data.CurrentMedications,
         },
       }),
-      
+
       prisma.user.update({
         where: {
           id: data.userId,
@@ -38,7 +38,7 @@ export async function createProfile(data: z.infer<typeof registerformschema> & {
         },
       }),
     ]);
-    
+
     return { status: 201, profile };
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -61,25 +61,23 @@ export async function createProfile(data: z.infer<typeof registerformschema> & {
   }
 }
 
-
-export const profilefind = async (userId: string) => {
+export const profileFind = async (userId: string): Promise<boolean> => {
   try {
-    const res = await prisma.profile.findUnique({
-      where: {
-        userId,
-      },
+    const profile = await prisma.profile.findFirst({
+      where: { userId },
+      select: { id: true },
     });
-    if (res) {
-      return true;
-    }
-    return false;
-  } catch (e) {
-    console.error('Error creating user:', e);
+    return !!profile;
+  } catch (error) {
+    console.error(
+      `Error checking profile existence for userId: ${userId}`,
+      error
+    );
     return false;
   }
 };
 
-export const handlelogout = async () => {
+export const handlelogout = async ():Promise<boolean> => {
   try {
     await signOut({
       redirect: false,
@@ -91,8 +89,13 @@ export const handlelogout = async () => {
   }
 };
 
-export const loginwithGoogle = async () => {
-  await signIn('google');
+export const loginwithGoogle = async ():Promise<boolean> => {
+  try {
+    await signIn('google');
 
-  return true;
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 };

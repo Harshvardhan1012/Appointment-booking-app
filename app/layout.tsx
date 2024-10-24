@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/app/constants/theme';
 import Navigation from '@/components/forms/Navigation';
 import { auth } from './auth';
 
@@ -15,7 +15,7 @@ const fontSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: 'Appointment-App',
-  description: 'app for scheduliing appointments',
+  description: 'App for scheduling appointments',
 };
 
 export default async function RootLayout({

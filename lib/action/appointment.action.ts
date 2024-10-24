@@ -1,10 +1,18 @@
 'use server';
 import prisma from '@/lib/db';
-import { Prisma, Status } from '@prisma/client';
+import { Appointment, Prisma, Status } from '@prisma/client';
 import { createTransport } from 'nodemailer';
 import { IstDate } from '@/lib/utils';
 
-export async function findDoctor(id: string) {
+const transport = createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
+});
+
+export async function findAppointments(id: string) {
   try {
     const appointments = await prisma.appointment.findMany({
       where: {
@@ -35,35 +43,55 @@ export async function findDoctor(id: string) {
   }
 }
 
-export const appointmentcount = async () => {
+//appointment count for super admin
+export const appointmentCount = async (): Promise<
+  | false
+  | {
+      PendingCount: number;
+      ApprovedCount: number;
+      RejectedCount: number;
+    }
+> => {
   try {
-    const PendingCount = await prisma.appointment.count({
+    const appointmentCounts = await prisma.appointment.groupBy({
+      by: ['AppointmentStatus'],
+      _count: {
+        AppointmentStatus: true,
+      },
       where: {
-        AppointmentStatus: 'Pending',
+        AppointmentStatus: {
+          in: ['Pending', 'Approved', 'Rejected'],
+        },
       },
     });
-    const ApprovedCount = await prisma.appointment.count({
-      where: {
-        AppointmentStatus: 'Approved',
-      },
-    });
-    const CancelledCount = await prisma.appointment.count({
-      where: {
-        AppointmentStatus: 'Rejected',
-      },
-    });
-    return {
-      PendingCount,
-      ApprovedCount,
-      CancelledCount,
-    };
+
+    const countMap = appointmentCounts.reduce(
+      (acc, item) => ({
+        ...acc,
+        [`${item.AppointmentStatus}Count`]: item._count.AppointmentStatus,
+      }),
+      { PendingCount: 0, ApprovedCount: 0, RejectedCount: 0 }
+    );
+
+    return countMap;
   } catch (error) {
-    console.error('Error creating user:', error);
+    console.error('Error fetching appointment counts:', error);
     return false;
   }
 };
 
-export const doctorAppointmentCount = async (id: string) => {
+
+//coount for admin(doctor)
+export const adminAppointmentCount = async (
+  id: string
+): Promise<
+  | false
+  | {
+      PendingCount: number;
+      ApprovedCount: number;
+      RejectedCount: number;
+    }
+> => {
   try {
     const counts = await prisma.appointment.groupBy({
       by: ['AppointmentStatus'],
@@ -84,7 +112,7 @@ export const doctorAppointmentCount = async (id: string) => {
         ...acc,
         [`${item.AppointmentStatus}Count`]: item._count.AppointmentStatus,
       }),
-      { PendingCount: 0, ApprovedCount: 0, CancelledCount: 0 }
+      { PendingCount: 0, ApprovedCount: 0, RejectedCount: 0 }
     );
 
     return countMap;
@@ -94,7 +122,7 @@ export const doctorAppointmentCount = async (id: string) => {
   }
 };
 
-export async function appointmentfind() {
+export const appointmentfind = async (): Promise<Appointment[] | false> => {
   try {
     const appointments = await prisma.appointment.findMany();
     return appointments;
@@ -102,41 +130,29 @@ export async function appointmentfind() {
     console.error('Error fetching appointments:', error);
     return false;
   }
-}
+};
 
 export const appointmentfindUser = async (appointmentId: number) => {
   try {
     const appointment = await prisma.appointment.findUnique({
       where: {
-        id: Number(appointmentId),
+        id: appointmentId,
       },
-    });
-    const user = await prisma.user.findUnique({
-      where: {
-        id: appointment?.physicianId,
+      include: {
+        physician: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
-    if (appointment) {
-      return {
-        user: user?.name,
-        appointment,
-      };
-    }
-    return false;
+    return appointment;
   } catch (err) {
     console.error('Error creating user:', err);
     return false;
   }
 };
-
-const transport = createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
-  },
-});
 
 export async function requestAppointment(data: {
   physician: string;
@@ -224,7 +240,7 @@ export async function updateAppointment(data: {
         AppointmentStatus: data.status,
       },
       include: {
-        user: true, // Include user details directly for convenience
+        user: true, 
         physician: true,
       },
     });

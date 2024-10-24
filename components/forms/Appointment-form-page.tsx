@@ -12,7 +12,6 @@ import { requestAppointment } from '@/lib/action/appointment.action';
 
 export default function AppointmentFormPage({ userId }: { userId: string }) {
   const router = useRouter();
-
   const [errMessage, setErrMessage] = React.useState('');
   const [loading, setIsLoading] = React.useState(false);
 
@@ -34,7 +33,7 @@ export default function AppointmentFormPage({ userId }: { userId: string }) {
         Reason: values.Reason,
         userId,
       };
-
+      
       const res = await requestAppointment(user);
 
       if (res.message === 'success') {
@@ -46,7 +45,7 @@ export default function AppointmentFormPage({ userId }: { userId: string }) {
           '/appointment-form/success/' +
           res.appointment?.id
         );
-        return;
+        return null;
       }
 
       setErrMessage(res.error ?? 'unexpected error');

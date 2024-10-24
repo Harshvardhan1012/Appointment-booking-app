@@ -19,26 +19,22 @@ export async function middleware(request: NextRequest) {
     ];
 
     if (session?.role == 'Admin' && pathname !== `/admin/${session?.id}`) {
-      console.log('redirecting to admin');
       return NextResponse.redirect(
         new URL(`/admin/${session?.id}`, request.url)
       );
     }
 
     if (publicPages.includes(pathname)) {
-      console.log('Redirecting to profile 22222');
       return NextResponse.redirect(
         new URL(`/profile/${session?.id}`, request.url)
       ); 
     }
     if (!allowedPaths.some((path) => path.test(pathname))) {
-      console.log('Redirecting to profile 333333');
       return NextResponse.redirect(new URL('/not-found', request.url));
     }
   }
 
   if (!cookiesget && !publicPages.includes(pathname)) {
-    console.log('Redirecting to profile 444444');
     return NextResponse.redirect(new URL('/not-found', request.url));
   }
 
