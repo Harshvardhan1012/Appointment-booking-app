@@ -35,7 +35,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {session && <Navigation />}
+          {session?.user && <Navigation />}
           {children}
         </ThemeProvider>
       </body>

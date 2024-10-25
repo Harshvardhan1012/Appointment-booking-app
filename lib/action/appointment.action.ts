@@ -1,16 +1,11 @@
 'use server';
 import prisma from '@/lib/db';
 import { Appointment, Prisma, Status } from '@prisma/client';
-import { createTransport } from 'nodemailer';
 import { IstDate } from '@/lib/utils';
+import { sendAppointmentEmail } from '@/app/constants';
 
-const transport = createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
-  },
-});
+
+
 
 export async function findAppointments(id: string) {
   try {
@@ -122,6 +117,48 @@ export const adminAppointmentCount = async (
   }
 };
 
+
+export const userAppointmentCount = async (
+  userId: string
+): Promise<
+  | false
+  | {
+      PendingCount: number;
+      ApprovedCount: number;
+      RejectedCount: number;
+    }
+> => {
+  try {
+    const counts = await prisma.appointment.groupBy({
+      by: ['AppointmentStatus'],
+      where: {
+        userId,
+        AppointmentStatus: {
+          in: ['Pending', 'Approved', 'Rejected'],
+        },
+      },
+      _count: {
+        AppointmentStatus: true,
+      },
+    });
+
+    // Use reduce to dynamically map counts
+    const countMap = counts.reduce(
+      (acc, item) => ({
+        ...acc,
+        [`${item.AppointmentStatus}Count`]: item._count.AppointmentStatus,
+      }),
+      { PendingCount: 0, ApprovedCount: 0, RejectedCount: 0 }
+    );
+
+    return countMap;
+  } catch (error) {
+    console.error('Error fetching appointment counts:', error);
+    return false;
+  }
+};
+
+
 export const appointmentfind = async (): Promise<Appointment[] | false> => {
   try {
     const appointments = await prisma.appointment.findMany();
@@ -137,6 +174,29 @@ export const appointmentfindUser = async (appointmentId: number) => {
     const appointment = await prisma.appointment.findUnique({
       where: {
         id: appointmentId,
+      },
+      include: {
+        physician: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return appointment;
+  } catch (err) {
+    console.error('Error creating user:', err);
+    return false;
+  }
+};
+
+
+export const userAppointments = async (userId: string) => {
+  try {
+    const appointment = await prisma.appointment.findMany({
+      where: {
+        userId,
       },
       include: {
         physician: {
@@ -182,26 +242,13 @@ export async function requestAppointment(data: {
         user: {
           select: {
             email: true,
+            name: true,
           },
         },
       },
     });
 
-    await transport.sendMail({
-      to: appointment.user.email,
-      from: process.env.EMAIL_FROM,
-      subject: `Appointment Requested with physician ${appointment.physician?.name}`,
-      html: `
-          <div style="font-family: Arial, sans-serif; color: #333;">
-            <h2 style="color: #1e90ff;">Appointment Requested</h2>
-            <p>Dear user,</p>
-            <p>You have successfully submitted an appointment request with the physician <strong>${appointment.physician?.name}</strong>.</p>
-            <p>The appointment requested date is : <strong style="color: #1e90ff;">${formattedDate}</strong></p>
-            <br />
-            <p>Thank you</p>
-          </div>
-        `,
-    });
+   sendAppointmentEmail(appointment, "", formattedDate);
 
     return { message: 'success', appointment };
   } catch (error) {
@@ -245,39 +292,11 @@ export async function updateAppointment(data: {
       },
     });
 
-    if (appointment.AppointmentStatus === 'Approved' && data.expectedDate) {
+    if (appointment.AppointmentStatus === 'Approved' && data.expectedDate && appointment.user?.name) {
       const formattedDate = IstDate(data.expectedDate);
-      await transport.sendMail({
-        to: appointment.user?.email, // Recipient's email
-        from: process.env.EMAIL_FROM, // Sender's email
-        subject: `Appointment confirmed by Physician ${appointment.physician?.name}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <h2 style="color: #4CAF50;">Appointment Confirmed</h2>
-            <p>Dear ${appointment.user.name},</p>
-            <p>Your appointment with Physician <strong>${appointment.physician?.name}</strong> has been confirmed on <strong>${formattedDate}</strong>.</p>
-            <p><strong>Remarks:</strong> ${data.remarks}</p>
-            <p>Thank you for choosing our service!</p>
-            <p style="color: #999; font-size: 12px;">This is an automated message. Please do not reply.</p>
-          </div>
-        `,
-      });
+      sendAppointmentEmail(appointment,data.remarks, formattedDate);  
     } else if (appointment.AppointmentStatus === 'Rejected') {
-      await transport.sendMail({
-        to: appointment.user?.email,
-        from: process.env.EMAIL_FROM,
-        subject: `Appointment with physician ${appointment.physician?.name} cancelled`,
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <h2 style="color: #F44336;">Appointment Cancelled</h2>
-            <p>Dear ${appointment.user.name},</p>
-            <p>Unfortunately, your appointment with physician <strong>${appointment.physician?.name}</strong> has been cancelled.</p>
-            <p><strong>Cancellation Reason:</strong> ${data.remarks}</p>
-            <p>We apologize for any inconvenience caused.</p>
-            <p style="color: #999; font-size: 12px;">This is an automated message. Please do not reply.</p>
-          </div>
-        `,
-      });
+      sendAppointmentEmail(appointment, data.remarks);
     }
 
     return {
@@ -288,5 +307,19 @@ export async function updateAppointment(data: {
   } catch (error) {
     console.error('Error updating appointment:', error);
     return { message: 'Error updating appointment', status: 500 };
+  }
+}
+
+export const deleteAppointmentUser=async(appointmentId:number)=>{
+  try {
+    await prisma.appointment.delete({
+      where: {
+        id: appointmentId,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error deleting appointment:', error);
+    return false;
   }
 }
