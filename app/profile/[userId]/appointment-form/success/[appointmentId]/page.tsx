@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { appointmentfindUser } from './../../../../../../lib/action/appointment.action';
 import { statusMap } from '@/app/constants';
+import { Button } from '@/components/ui/button';
 
 
 
@@ -40,15 +41,20 @@ export default async function Page({
         <div className="text-white-700 text-base mb-2">
           <span className="font-medium">Date:</span> {Date}
         </div>
-        <div className="mt-6">
+        <div className="mt-6 gap-3">
           <Link href={`/profile/${userId}/appointment-form`}>
             <button
               type="button"
-              className="focus:outline-none text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+              className="focus:outline-none text-white bg-green-700 w-full font-medium rounded text-sm px-5 py-2"
             >
-              New Appointment
+             Schedule New Appointment
             </button>
           </Link>
+          <Link href={`/profile/${userId}/manage`}>
+              <Button className="bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full mt-4">
+                Manage Appointments
+              </Button>
+            </Link>
         </div>
       </div>
     </div>

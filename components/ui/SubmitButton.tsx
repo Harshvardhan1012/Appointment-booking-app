@@ -23,9 +23,9 @@ export const SubmitButton = ({
         type="submit"
         disabled={loading}
         className={cn(
-          `shad-primary-btn w-full ${
+          `shad-primary-btn w-full focus:outline-none focus:ring-1 ${
             buttonColor === 'green'
-              ? 'bg-green-500'
+              ? 'bg-green-700'
               : buttonColor === 'red'
                 ? 'bg-red-500'
                 : 'bg-dark-500'

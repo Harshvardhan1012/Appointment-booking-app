@@ -7,7 +7,7 @@ const publicPages = ['/login', '/home', '/', '/admin/register'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const cookiesget = cookies().get('authjs.session-token');
+  const cookiesget = cookies().get('__Secure-authjs.session-token');
   const session = await decodeSessionCookie(cookiesget!);
 
   if (session) {
@@ -16,6 +16,7 @@ export async function middleware(request: NextRequest) {
       new RegExp(`^/profile/${session?.id}$`), // Match for /profile/[userId]
       /^\/profile\/[^\/]+\/appointment-form\/success\/[^\/]+$/, // Match /profile/[userId]/appointment-form/success/[appointmentId]
       new RegExp(`^/profile/${session?.id}/appointment-form$`), // Allow /profile/[userId]/appointment-form
+      new RegExp(`^/profile/${session?.id}/manage`), // Allow /profile/[userId]/appointment-form/[appointmentId]
     ];
 
     if (session?.role == 'Admin' && pathname !== `/admin/${session?.id}`) {

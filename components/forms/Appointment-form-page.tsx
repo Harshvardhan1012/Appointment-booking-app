@@ -9,6 +9,8 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { requestAppointment } from '@/lib/action/appointment.action';
+import Link from 'next/link';
+import { Button } from '../ui/button';
 
 export default function AppointmentFormPage({ userId }: { userId: string }) {
   const router = useRouter();
@@ -33,7 +35,7 @@ export default function AppointmentFormPage({ userId }: { userId: string }) {
         Reason: values.Reason,
         userId,
       };
-      
+
       const res = await requestAppointment(user);
 
       if (res.message === 'success') {
@@ -100,13 +102,24 @@ export default function AppointmentFormPage({ userId }: { userId: string }) {
             <SubmitButton
               loading={loading}
               label="Submit and Continue"
-              className="bg-green-500"
+              buttonColor="green"
             />
             {errMessage && (
               <p className="text-red-500 text-sm flex justify-center">
                 {errMessage}
               </p>
             )}
+            <div className="flex items-center justify-center my-4">
+              <div className="flex-grow h-px bg-gray-500"></div>
+              <span className="text-gray-500 mx-2">OR</span>
+              <div className="flex-grow h-px bg-gray-500"></div>
+            </div>
+
+            <Link href={`/profile/${userId}/manage`}>
+              <Button className="bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:ring-1 w-full mt-3">
+                Manage Appointments
+              </Button>
+            </Link>
           </form>
         </Form>
       </div>

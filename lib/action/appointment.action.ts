@@ -117,6 +117,48 @@ export const adminAppointmentCount = async (
   }
 };
 
+
+export const userAppointmentCount = async (
+  userId: string
+): Promise<
+  | false
+  | {
+      PendingCount: number;
+      ApprovedCount: number;
+      RejectedCount: number;
+    }
+> => {
+  try {
+    const counts = await prisma.appointment.groupBy({
+      by: ['AppointmentStatus'],
+      where: {
+        userId,
+        AppointmentStatus: {
+          in: ['Pending', 'Approved', 'Rejected'],
+        },
+      },
+      _count: {
+        AppointmentStatus: true,
+      },
+    });
+
+    // Use reduce to dynamically map counts
+    const countMap = counts.reduce(
+      (acc, item) => ({
+        ...acc,
+        [`${item.AppointmentStatus}Count`]: item._count.AppointmentStatus,
+      }),
+      { PendingCount: 0, ApprovedCount: 0, RejectedCount: 0 }
+    );
+
+    return countMap;
+  } catch (error) {
+    console.error('Error fetching appointment counts:', error);
+    return false;
+  }
+};
+
+
 export const appointmentfind = async (): Promise<Appointment[] | false> => {
   try {
     const appointments = await prisma.appointment.findMany();
@@ -132,6 +174,29 @@ export const appointmentfindUser = async (appointmentId: number) => {
     const appointment = await prisma.appointment.findUnique({
       where: {
         id: appointmentId,
+      },
+      include: {
+        physician: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return appointment;
+  } catch (err) {
+    console.error('Error creating user:', err);
+    return false;
+  }
+};
+
+
+export const userAppointments = async (userId: string) => {
+  try {
+    const appointment = await prisma.appointment.findMany({
+      where: {
+        userId,
       },
       include: {
         physician: {
@@ -242,5 +307,19 @@ export async function updateAppointment(data: {
   } catch (error) {
     console.error('Error updating appointment:', error);
     return { message: 'Error updating appointment', status: 500 };
+  }
+}
+
+export const deleteAppointmentUser=async(appointmentId:number)=>{
+  try {
+    await prisma.appointment.delete({
+      where: {
+        id: appointmentId,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error deleting appointment:', error);
+    return false;
   }
 }

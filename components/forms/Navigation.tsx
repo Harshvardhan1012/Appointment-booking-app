@@ -4,7 +4,6 @@ import { handlelogout } from '@/lib/action/profile.action';
 import { useRouter } from 'next/navigation';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,

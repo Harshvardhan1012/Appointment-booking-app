@@ -58,7 +58,7 @@ export default function LoginPage() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex-1 space-y-6 w-full"
           >
-            <section className="mb-12 space-y-4 w-full">
+            <section className="mb-8 space-y-4 w-full">
               <h1 className="header text-white">Hi there 👋</h1>
               <p className="text-dark-700">Get started with appointments.</p>
             </section>

@@ -10,18 +10,32 @@ import { DialogboxCancel } from '../../ui/DialogboxCancel';
 import check from '@/public/assets/icons/check.svg';
 import pending from '@/public/assets/icons/pending.svg';
 import cancelled from '@/public/assets/icons/cancelled.svg';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 import Image from 'next/image';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { SubmitButton } from '@/components/ui/SubmitButton';
+import { Trash } from 'lucide-react';
+import { deleteAppointmentUser } from '@/lib/action/appointment.action';
+import clearCachesByServerAction from '@/lib/action/clearcachesbyaction';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 type Appointmenttable = {
-  user:{
-    name:string | null
+  user: {
+    name: string | null
   }
   id: number;
-  physician:{
-    name:string | null
+  physician: {
+    name: string | null
   }
   Reason: string;
   Date: string;
@@ -53,10 +67,9 @@ export const columns: ColumnDef<Appointmenttable>[] = [
     header: () => {
       return <span className="flex justify-center items-center">Name</span>;
     },
-
     cell: ({ row }) => {
-      const name = row.original.user.name;
-      return <span className="flex justify-center items-center">{name?name:"-"}</span>;
+      const name = row.original.user?.name;
+      return <span className="flex justify-center items-center">{name ? name : "-"}</span>;
     },
   },
   {
@@ -70,13 +83,12 @@ export const columns: ColumnDef<Appointmenttable>[] = [
         <span className="flex justify-center items-center">
           <span
             className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full w-[105px] justify-center
-                                ${
-                                  status === 'Approved'
-                                    ? 'bg-green-300 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                    : status === 'Rejected'
-                                      ? 'bg-red-300 text-red-800 dark:bg-red-600 dark:text-red-300'
-                                      : 'bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                                }`}
+                                ${status === 'Approved'
+                ? 'bg-green-300 text-green-800 dark:bg-green-900 dark:text-green-300'
+                : status === 'Rejected'
+                  ? 'bg-red-300 text-red-800 dark:bg-red-600 dark:text-red-300'
+                  : 'bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+              }`}
           >
             {status === 'Approved' && (
               <Image src={check} alt="Approved" className="w-4 h-4 me-1" />
@@ -208,6 +220,157 @@ export const columns: ColumnDef<Appointmenttable>[] = [
           )}
         </div>
       );
+    },
+  },
+];
+
+type UserTable = {
+  id: number;
+  physician: {
+    name: string | null
+  }
+  Reason: string;
+  Date: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  AppointmentStatus: Status;
+};
+
+
+export const columnUser: ColumnDef<UserTable>[] = [
+
+  {
+    accessorKey: 'id',
+    sortingFn: 'alphanumericCaseSensitive',
+    header: () => {
+      return <span className="flex justify-center items-center">ID</span>;
+    },
+
+    cell: ({ row, table }) => {
+      const rowid =
+        (table
+          .getSortedRowModel()
+          ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1;
+      return <span className="flex justify-center items-center">{rowid}</span>;
+    },
+  },
+  {
+    accessorKey: 'physician',
+    header: () => {
+      return <span className="flex justify-center items-center">Doctor</span>;
+    },
+    cell: ({ row }) => {
+      const name = row.original.physician.name;
+      return <span className="flex justify-center items-center">{name ? name : "-"}</span>;
+    },
+  },
+  {
+    accessorKey: 'AppointmentStatus',
+    header: () => {
+      return <span className="flex justify-center items-center">Status</span>;
+    },
+    cell: ({ row }) => {
+      const status = row.original.AppointmentStatus;
+      return (
+        <span className="flex justify-center items-center">
+          <span
+            className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full w-[105px] justify-center
+                                ${status === 'Approved'
+                ? 'bg-green-300 text-green-800 dark:bg-green-900 dark:text-green-300'
+                : status === 'Rejected'
+                  ? 'bg-red-300 text-red-800 dark:bg-red-600 dark:text-red-300'
+                  : 'bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+              }`}
+          >
+            {status === 'Approved' && (
+              <Image src={check} alt="Approved" className="w-4 h-4 me-1" />
+            )}
+            {status === 'Pending' && (
+              <Image src={pending} alt="Pending" className="w-4 h-4 me-1" />
+            )}
+            {status === 'Rejected' && (
+              <Image src={cancelled} alt="Cancelled" className="w-4 h-4 me-1" />
+            )}
+            {status === 'Approved'
+              ? 'Scheduled'
+              : status === 'Rejected'
+                ? 'Cancelled'
+                : 'Pending'}
+          </span>
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'Date',
+    header: () => {
+      return <span className="flex justify-center items-center">Date</span>;
+    },
+    cell: ({ row }) => {
+      const date = row.original.Date;
+      return <span className="flex justify-center items-center">{date}</span>;
+    },
+  },
+  {
+    accessorKey: 'Reason',
+    header: () => {
+      return <span className="flex justify-center items-center">Reason</span>;
+    },
+    cell: ({ row }) => {
+      const reason = row.original.Reason;
+      return <span className="flex justify-center items-center">{reason}</span>;
+    },
+  },
+  {
+    id: 'actions',
+    header: () => {
+      return <span className="flex justify-center items-center">Actions</span>;
+    },
+    cell: ({ row }) => {
+      const e = row.original;
+      const [isOpen, setIsOpen] = useState(false);
+      const [loading, setLoading] = useState(false);
+      const deleteappointment = async () => {
+        setLoading(true);
+        await deleteAppointmentUser(e.id);
+        setLoading(false);
+        await clearCachesByServerAction('/profile/[userId]/manage');
+        setIsOpen(false);
+      }
+      return (
+        <div className='flex justify-center items-center'>
+          <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+            <AlertDialogTrigger asChild>
+              <Button className='w-20 h-10 text-red-500'>
+                <Trash />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="bg-dark-400 border-dark-400 text-white w-[90%] sm:w-[70%] md:w-[50%] max-w-lg rounded-lg sm:m-5">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete the appointment with physician {e.physician.name}?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="border-dark-500 sm:w-20">
+                  No
+                </AlertDialogCancel>
+                <SubmitButton
+                  loading={loading}
+                  className="rounded-md bg-red-900 border-dark-400 sm:w-20"
+                  onClick={deleteappointment}
+                  label="Yes"
+                // loading={loading}
+                />
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )
+
+
     },
   },
 ];
