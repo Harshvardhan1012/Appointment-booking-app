@@ -1,4 +1,3 @@
-'use client';
 import { registerformschema } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useLayoutEffect, useState } from 'react';
@@ -19,7 +18,7 @@ interface user {
   name: string;
 }
 
-export default function Dashboard({ user }: { user: user }) {
+export default function UpdateProfile({ user }: { user: user }) {
   const router = useRouter();
   useLayoutEffect(() => {
     router.refresh();
